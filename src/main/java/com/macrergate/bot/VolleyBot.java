@@ -22,7 +22,7 @@ public class VolleyBot extends TelegramLongPollingBot {
 
     public VolleyBot(@Value("${bot.token}") String botToken,
                      @Value("${bot.username}") String botUsername,
-                     @Value("${bot.chat-id}") String chatId,
+                     @Value("${bot.chatId}") String chatId,
                      CommandRegistry commandRegistry) {
         super(botToken);
         this.botUsername = botUsername;
