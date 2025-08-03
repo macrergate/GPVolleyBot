@@ -83,7 +83,7 @@ Telegram-бот для организации записи на игры в во
 
 ## Технический стек
 
-- Java 21
+- Java 17
 - Spring Boot
 - Spring Data JDBC
 - SQLite
