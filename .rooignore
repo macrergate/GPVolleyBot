@@ -1,0 +1,8 @@
+/src/main/resources/application-development.properties
+.roo/mcp.json
+.cursor/mcp.json
+
+**/*secrets.properties
+
+**/*.jar
+**/*.iml
