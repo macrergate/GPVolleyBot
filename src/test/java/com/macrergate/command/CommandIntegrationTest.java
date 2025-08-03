@@ -1,11 +1,8 @@
 package com.macrergate.command;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.doNothing;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
-
+import com.macrergate.bot.VolleyBot;
+import com.macrergate.service.BookingService;
+import com.macrergate.service.SettingsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +14,8 @@ import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import com.macrergate.bot.VolleyBot;
-import com.macrergate.service.BookingService;
-import com.macrergate.service.SettingsService;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Интеграционный тест для проверки взаимодействия между командами

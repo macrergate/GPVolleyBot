@@ -4,15 +4,13 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-
 import com.macrergate.bot.VolleyBot;
 import com.macrergate.model.Booking;
 import com.macrergate.model.Settings;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Service
 @RequiredArgsConstructor
@@ -72,27 +70,28 @@ public class NotificationService {
         
         List<Booking> bookings = bookingService.getAllBookings();
         int totalPlayers = bookings.size();
-        
-        String message = "🏐 Запись на игру сегодня (" + gameDay + ") в " + gameTime + " закрыта!\n" +
-                         "Всего записалось: " + totalPlayers + "/" + settings.getPlayerLimit() + " игроков.\n\n";
+
+        StringBuilder message = new StringBuilder("🏐 Запись на игру сегодня (" + gameDay + ") в " + gameTime + " " +
+                "закрыта!\n" +
+                "Всего записалось: " + totalPlayers + "/" + settings.getPlayerLimit() + " игроков.\n\n");
         
         if (!bookings.isEmpty()) {
-            message += "Список записавшихся:\n";
+            message.append("Список записавшихся:\n");
             int counter = 1;
             for (Booking booking : bookings) {
                 String arrivalTime = booking.getArrivalTimeAsLocalTime() != null
                     ? " (" + booking.getArrivalTimeAsLocalTime() + ")"
                     : "";
-                message += counter + ". " + booking.getDisplayName() + arrivalTime + "\n";
+                message.append(counter).append(". ").append(booking.getDisplayName()).append(arrivalTime).append("\n");
                 counter++;
             }
         } else {
-            message += "Никто не записался на игру.";
+            message.append("Никто не записался на игру.");
         }
         
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
-        sendMessage.setText(message);
+        sendMessage.setText(message.toString());
         
         try {
             bot.execute(sendMessage);

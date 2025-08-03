@@ -1,24 +1,18 @@
 package com.macrergate.bot;
 
+import com.macrergate.command.Command;
+import com.macrergate.command.CommandRegistry;
 import jakarta.annotation.PostConstruct;
-
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import com.macrergate.command.Command;
-import com.macrergate.command.CommandRegistry;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 /**
  * Основной класс бота для Telegram
  */
-@Component
 @Slf4j
 public class VolleyBot extends TelegramLongPollingBot {
     

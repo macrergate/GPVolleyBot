@@ -1,15 +1,11 @@
 package com.macrergate.scheduler;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import com.macrergate.model.Settings;
+import com.macrergate.service.NotificationService;
+import com.macrergate.service.SettingsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,9 +14,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import com.macrergate.model.Settings;
-import com.macrergate.service.NotificationService;
-import com.macrergate.service.SettingsService;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class NotificationSchedulerTest {
@@ -35,7 +34,7 @@ public class NotificationSchedulerTest {
     private NotificationScheduler notificationScheduler;
     
     private Settings settings;
-    private String chatId = "123456789";
+    private final String chatId = "123456789";
     
     @BeforeEach
     void setUp() {

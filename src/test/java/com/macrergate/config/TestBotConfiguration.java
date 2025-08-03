@@ -1,16 +1,13 @@
 package com.macrergate.config;
 
+import com.macrergate.bot.VolleyBot;
+import org.mockito.Mockito;
 import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
-import org.mockito.Mockito;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
-
-import com.macrergate.bot.VolleyBot;
 
 /**
  * Тестовая конфигурация для бота

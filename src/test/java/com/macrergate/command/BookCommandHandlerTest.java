@@ -1,15 +1,14 @@
 package com.macrergate.command;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
-
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.macrergate.model.Booking;
+import com.macrergate.model.Settings;
+import com.macrergate.service.BookingService;
+import com.macrergate.service.BookingService.BookingResult;
+import com.macrergate.service.SettingsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,11 +20,10 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 
-import com.macrergate.model.Booking;
-import com.macrergate.model.Settings;
-import com.macrergate.service.BookingService;
-import com.macrergate.service.BookingService.BookingResult;
-import com.macrergate.service.SettingsService;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class BookCommandHandlerTest {
