@@ -1,15 +1,13 @@
 package com.macrergate.service;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.macrergate.bot.VolleyBot;
+import com.macrergate.model.Booking;
+import com.macrergate.model.Settings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,9 +17,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import com.macrergate.bot.VolleyBot;
-import com.macrergate.model.Booking;
-import com.macrergate.model.Settings;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class NotificationServiceTest {
@@ -40,7 +39,7 @@ public class NotificationServiceTest {
     
     private Settings settings;
     private List<Booking> bookings;
-    private String chatId = "123456789";
+    private final String chatId = "123456789";
     
     @BeforeEach
     void setUp() {

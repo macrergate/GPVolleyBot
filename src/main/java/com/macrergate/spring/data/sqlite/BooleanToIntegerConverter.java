@@ -10,6 +10,6 @@ import org.springframework.data.convert.WritingConverter;
 public class BooleanToIntegerConverter implements Converter<Boolean, Integer> {
     @Override
     public Integer convert(Boolean source) {
-        return source != null && source ? 1 : 0;
+        return source ? 1 : 0;
     }
 }
