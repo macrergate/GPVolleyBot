@@ -1,7 +1,7 @@
 -- Таблица настроек
 CREATE TABLE IF NOT EXISTS settings (
     id INTEGER PRIMARY KEY CHECK (id = 1), -- Только одна запись
-    player_limit INTEGER NOT NULL DEFAULT 21,
+    player_limit INTEGER NOT NULL,
     current_game_day TEXT, -- День текущей игры (например, "Вторник")
     current_game_time TEXT, -- Время текущей игры (например, "18:00")
     current_game_date TEXT, -- Дата текущей игры (например, "2023-08-02")
@@ -18,4 +18,4 @@ CREATE TABLE IF NOT EXISTS bookings (
 );
 
 -- Вставка начальных настроек, если таблица пуста
-INSERT OR IGNORE INTO settings (id, player_limit) VALUES (1, 21);
+INSERT OR IGNORE INTO settings (id, player_limit) VALUES (1, 18);

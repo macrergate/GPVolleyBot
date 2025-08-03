@@ -1,25 +1,24 @@
 package com.macrergate.repository;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
+import com.macrergate.model.Booking;
+import com.macrergate.model.Settings;
 import com.macrergate.spring.data.sqlite.SqliteJdbcConfiguration;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.context.annotation.Import;
 
-import com.macrergate.model.Booking;
-import com.macrergate.model.Settings;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJdbcTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)
@@ -39,7 +38,7 @@ public class RepositoryIntegrationTest {
         // Arrange
         Settings settings = new Settings();
         settings.setId(1L);
-        settings.setPlayerLimit(21);
+        settings.setPlayerLimit(Settings.DEFAULT_PLAYER_LIMIT);
         settings.setCurrentGameDay("Вторник");
         settings.setCurrentGameTimeAsLocalTime(LocalTime.of(18, 0));
         settings.setCurrentGameDateAsLocalDate(LocalDate.now());
@@ -51,7 +50,7 @@ public class RepositoryIntegrationTest {
         // Assert
         assertThat(foundSettings).isPresent();
         assertThat(foundSettings.get().getId()).isEqualTo(savedSettings.getId());
-        assertThat(foundSettings.get().getPlayerLimit()).isEqualTo(21);
+        assertThat(foundSettings.get().getPlayerLimit()).isEqualTo(Settings.DEFAULT_PLAYER_LIMIT);
         assertThat(foundSettings.get().getCurrentGameDay()).isEqualTo("Вторник");
         assertThat(foundSettings.get().getCurrentGameTimeAsLocalTime()).isEqualTo(LocalTime.of(18, 0));
         assertThat(foundSettings.get().getCurrentGameDateAsLocalDate()).isEqualTo(LocalDate.now());

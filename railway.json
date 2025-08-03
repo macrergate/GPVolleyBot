@@ -1,5 +1,5 @@
 {
-  "schema": "https://railway.app/railway.schema.json",
+  "$schema": "https://railway.app/railway.schema.json",
   "build": {
     "builder": "NIXPACKS",
     "buildCommand": "mvn clean package -DskipTests"
@@ -8,11 +8,5 @@
     "startCommand": "java -jar target/volleybot-1.0.0.jar",
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 10
-  },
-  "volumes": [
-    {
-      "name": "volleybot-data",
-      "mountPath": "/app/data"
-    }
-  ]
+  }
 }

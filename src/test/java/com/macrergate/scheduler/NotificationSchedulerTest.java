@@ -40,7 +40,7 @@ public class NotificationSchedulerTest {
     void setUp() {
         settings = new Settings();
         settings.setId(1L);
-        settings.setPlayerLimit(21);
+        settings.setPlayerLimit(Settings.DEFAULT_PLAYER_LIMIT);
         settings.setCurrentGameDay("Вторник");
         settings.setCurrentGameTimeAsLocalTime(LocalTime.of(18, 0));
         settings.setCurrentGameDateAsLocalDate(LocalDate.now());

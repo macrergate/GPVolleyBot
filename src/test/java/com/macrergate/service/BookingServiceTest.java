@@ -1,18 +1,15 @@
 package com.macrergate.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import com.macrergate.model.Booking;
+import com.macrergate.model.Settings;
+import com.macrergate.repository.BookingRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,9 +17,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.macrergate.model.Booking;
-import com.macrergate.model.Settings;
-import com.macrergate.repository.BookingRepository;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class BookingServiceTest {
@@ -57,7 +57,7 @@ public class BookingServiceTest {
         booking2.setArrivalTimeAsLocalTime(null);
         
         settings = new Settings();
-        settings.setPlayerLimit(21);
+        settings.setPlayerLimit(Settings.DEFAULT_PLAYER_LIMIT);
     }
     
     @Test
@@ -79,7 +79,7 @@ public class BookingServiceTest {
         // Arrange
         when(settingsService.isBookingOpen()).thenReturn(true);
         when(bookingRepository.findByUserId("user1")).thenReturn(Optional.empty());
-        when(bookingRepository.findAllBookings()).thenReturn(Arrays.asList(booking2));
+        when(bookingRepository.findAllBookings()).thenReturn(Collections.singletonList(booking2));
         when(settingsService.getSettings()).thenReturn(settings);
         when(bookingRepository.save(any(Booking.class))).thenReturn(booking1);
         

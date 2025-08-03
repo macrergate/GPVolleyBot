@@ -1,11 +1,5 @@
 package com.macrergate.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -13,6 +7,8 @@ import java.time.format.TextStyle;
 import java.util.Locale;
 import java.util.Optional;
 
+import com.macrergate.model.Settings;
+import com.macrergate.repository.SettingsRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,8 +16,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.macrergate.model.Settings;
-import com.macrergate.repository.SettingsRepository;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class SettingsServiceTest {
@@ -38,7 +37,7 @@ public class SettingsServiceTest {
     void setUp() {
         settings = new Settings();
         settings.setId(1L);
-        settings.setPlayerLimit(21);
+        settings.setPlayerLimit(Settings.DEFAULT_PLAYER_LIMIT);
         settings.setCurrentGameDay("Вторник");
         settings.setCurrentGameTimeAsLocalTime(LocalTime.of(18, 0));
         settings.setCurrentGameDateAsLocalDate(LocalDate.now());
@@ -55,7 +54,7 @@ public class SettingsServiceTest {
         
         // Assert
         assertThat(result).isNotNull();
-        assertThat(result.getPlayerLimit()).isEqualTo(21);
+        assertThat(result.getPlayerLimit()).isEqualTo(Settings.DEFAULT_PLAYER_LIMIT);
         assertThat(result.getCurrentGameDay()).isEqualTo("Вторник");
         assertThat(result.isBookingOpen()).isFalse();
     }
@@ -71,7 +70,7 @@ public class SettingsServiceTest {
         
         // Assert
         assertThat(result).isNotNull();
-        assertThat(result.getPlayerLimit()).isEqualTo(21); // Default value
+        assertThat(result.getPlayerLimit()).isEqualTo(Settings.DEFAULT_PLAYER_LIMIT); // Default value
         assertThat(result.isBookingOpen()).isFalse(); // Default value
         verify(settingsRepository, times(1)).save(any(Settings.class));
     }

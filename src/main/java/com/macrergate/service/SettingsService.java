@@ -3,12 +3,10 @@ package com.macrergate.service;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-import org.springframework.stereotype.Service;
-
 import com.macrergate.model.Settings;
 import com.macrergate.repository.SettingsRepository;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -20,7 +18,7 @@ public class SettingsService {
                 .orElseGet(() -> {
                     Settings settings = new Settings();
                     settings.setId(1L);
-                    settings.setPlayerLimit(21);
+                    settings.setPlayerLimit(Settings.DEFAULT_PLAYER_LIMIT);
                     return settingsRepository.save(settings);
                 });
     }

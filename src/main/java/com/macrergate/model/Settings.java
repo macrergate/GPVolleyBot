@@ -3,17 +3,17 @@ package com.macrergate.model;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
-
-import lombok.Data;
 
 @Data
 @Table("settings")
 public class Settings {
+    public static final int DEFAULT_PLAYER_LIMIT = 18;
     @Id
     private Long id = 1L; // Всегда 1
-    private int playerLimit = 21;
+    private int playerLimit = DEFAULT_PLAYER_LIMIT;
     private String currentGameDay;
     private String currentGameTime;
     private String currentGameDate;

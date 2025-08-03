@@ -36,25 +36,37 @@ public class VolleyBot extends TelegramLongPollingBot {
      */
     @PostConstruct
     public void sendOnlineMessage() {
-        sendMessageToGroup("Бот онлайн");
+        sendMessageToGroup("Бот онлайн", true);
         
         // Регистрируем хук для отправки сообщения при завершении работы
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
-                sendMessageToGroup("Бот офлайн");
+                sendMessageToGroup("Бот офлайн", true);
             } catch (Exception e) {
                 log.error("Ошибка при отправке сообщения о завершении работы", e);
             }
         }));
     }
-    
+
     /**
      * Вспомогательный метод для отправки сообщения в группу
+     *
+     * @param text текст сообщения
      */
     private void sendMessageToGroup(String text) {
+        sendMessageToGroup(text, false);
+    }
+
+    /**
+     * Вспомогательный метод для отправки сообщения без звука в группу
+     */
+    private void sendMessageToGroup(String text, boolean silent) {
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
         message.setText(text);
+        if (silent) {
+            message.disableNotification();
+        }
         
         try {
             execute(message);
@@ -75,8 +87,7 @@ public class VolleyBot extends TelegramLongPollingBot {
         }
         
         String messageText = update.getMessage().getText();
-        String chatId = update.getMessage().getChatId().toString();
-        
+
         // Проверяем, что сообщение начинается с "/"
         if (!messageText.startsWith("/")) {
             return;
@@ -97,15 +108,7 @@ public class VolleyBot extends TelegramLongPollingBot {
         
         // Отправляем ответ пользователю
         if (response != null && !response.isEmpty()) {
-            SendMessage sendMessage = new SendMessage();
-            sendMessage.setChatId(chatId);
-            sendMessage.setText(response);
-            
-            try {
-                execute(sendMessage);
-            } catch (TelegramApiException e) {
-                // Обработка ошибки
-            }
+            sendMessageToGroup(response);
         }
     }
 }

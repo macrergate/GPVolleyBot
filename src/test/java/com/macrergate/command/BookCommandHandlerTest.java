@@ -41,15 +41,13 @@ public class BookCommandHandlerTest {
     private List<Booking> bookings;
     private Update update;
     private Message message;
-    private User user;
-    private Chat chat;
 
     @BeforeEach
     void setUp() {
         // Настройка тестовых данных
         settings = new Settings();
         settings.setId(1L);
-        settings.setPlayerLimit(21);
+        settings.setPlayerLimit(Settings.DEFAULT_PLAYER_LIMIT);
 
         bookings = new ArrayList<>();
         
@@ -67,8 +65,8 @@ public class BookCommandHandlerTest {
         // Настройка объектов Telegram API
         update = new Update();
         message = new Message();
-        user = new User();
-        chat = new Chat();
+        User user = new User();
+        Chat chat = new Chat();
         
         user.setId(123456789L);
         user.setFirstName("Test");
@@ -127,7 +125,7 @@ public class BookCommandHandlerTest {
 
         // Assert
         assertThat(response).contains("❌ Не удалось записаться: достигнут лимит игроков");
-        assertThat(response).contains("21");
+        assertThat(response).contains(String.valueOf(Settings.DEFAULT_PLAYER_LIMIT));
     }
 
     @Test

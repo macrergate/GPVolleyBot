@@ -1,7 +1,7 @@
 -- Таблица настроек
 CREATE TABLE IF NOT EXISTS settings (
     id INTEGER PRIMARY KEY,
-    player_limit INTEGER NOT NULL DEFAULT 21,
+    player_limit INTEGER NOT NULL,
     current_game_day VARCHAR(20),
     current_game_time VARCHAR(10),
     current_game_date VARCHAR(10),
@@ -21,4 +21,4 @@ CREATE TABLE IF NOT EXISTS bookings (
 DELETE FROM settings;
 DELETE FROM bookings;
 -- Вставка начальных настроек
-INSERT INTO settings (id, player_limit) VALUES (1, 21);
+INSERT INTO settings (id, player_limit) VALUES (1, 18);

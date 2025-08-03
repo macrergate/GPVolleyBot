@@ -3,15 +3,13 @@ package com.macrergate.scheduler;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
-
 import com.macrergate.model.Settings;
 import com.macrergate.service.NotificationService;
 import com.macrergate.service.SettingsService;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
@@ -21,9 +19,9 @@ public class NotificationScheduler {
     
     @Value("${bot.chat-id}")
     private String chatId;
-    
-    // Запуск уведомления каждый вторник в 8:00
-    @Scheduled(cron = "0 0 8 ? * TUE")
+
+    // Запуск уведомления каждый вторник в 9:00
+    @Scheduled(cron = "0 0 9 ? * TUE")
     public void sendTuesdayNotification() {
         Settings settings = settingsService.getSettings();
         settings.setCurrentGameDay("Вторник");
@@ -32,17 +30,17 @@ public class NotificationScheduler {
         
         notificationService.sendOpenBookingNotification(chatId);
     }
-    
-    // Запуск уведомления каждый четверг в 8:00
-    @Scheduled(cron = "0 0 8 ? * THU")
+
+    // Запуск уведомления каждый четверг в 9:00
+    @Scheduled(cron = "0 0 9 ? * THU")
     public void sendThursdayNotification() {
         settingsService.updateCurrentGame("Четверг", LocalTime.of(18, 0), LocalDate.now());
         
         notificationService.sendOpenBookingNotification(chatId);
     }
-    
-    // Запуск уведомления каждое воскресенье в 8:00
-    @Scheduled(cron = "0 0 8 ? * SUN")
+
+    // Запуск уведомления каждое воскресенье в 9:00
+    @Scheduled(cron = "0 0 9 ? * SUN")
     public void sendSundayNotification() {
         settingsService.updateCurrentGame("Воскресенье", LocalTime.of(17, 0), LocalDate.now());
         

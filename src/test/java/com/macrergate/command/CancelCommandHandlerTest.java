@@ -1,11 +1,12 @@
 package com.macrergate.command;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import com.macrergate.model.Booking;
+import com.macrergate.model.Settings;
+import com.macrergate.service.BookingService;
+import com.macrergate.service.SettingsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,10 +18,8 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 
-import com.macrergate.model.Booking;
-import com.macrergate.model.Settings;
-import com.macrergate.service.BookingService;
-import com.macrergate.service.SettingsService;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class CancelCommandHandlerTest {
@@ -37,16 +36,13 @@ public class CancelCommandHandlerTest {
     private Settings settings;
     private List<Booking> bookings;
     private Update update;
-    private Message message;
-    private User user;
-    private Chat chat;
 
     @BeforeEach
     void setUp() {
         // Настройка тестовых данных
         settings = new Settings();
         settings.setId(1L);
-        settings.setPlayerLimit(21);
+        settings.setPlayerLimit(Settings.DEFAULT_PLAYER_LIMIT);
 
         bookings = new ArrayList<>();
         
@@ -63,9 +59,9 @@ public class CancelCommandHandlerTest {
         
         // Настройка объектов Telegram API
         update = new Update();
-        message = new Message();
-        user = new User();
-        chat = new Chat();
+        Message message = new Message();
+        User user = new User();
+        Chat chat = new Chat();
         
         user.setId(123456789L);
         user.setFirstName("Test");
