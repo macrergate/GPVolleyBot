@@ -5,6 +5,7 @@ import com.macrergate.command.CancelCommandHandler;
 import com.macrergate.command.CommandRegistry;
 import com.macrergate.command.LimitCommandHandler;
 import com.macrergate.command.ListCommandHandler;
+import com.macrergate.config.BotProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,20 +49,28 @@ public class VolleyBotTest {
     
     @Mock
     private LimitCommandHandler limitCommandHandler;
-    
+
     private VolleyBot volleyBot;
     
     private Update update;
     private Message message;
     private final String botUsername = "TestBot";
-    private final String chatId = "test_chat_id";
-    private final String adminChatId = "test_admin_chat_id";
+    @Mock
+    private BotProperties botProperties;
 
     @BeforeEach
     void setUp() {
-        // Создаем экземпляр бота с тестовыми параметрами
+        // Настраиваем мок BotProperties
         String botToken = "test_token";
-        volleyBot = new VolleyBot(botToken, botUsername, chatId, adminChatId, commandRegistry);
+        when(botProperties.getToken()).thenReturn(botToken);
+        when(botProperties.getUsername()).thenReturn(botUsername);
+        String chatId = "test_chat_id";
+        when(botProperties.getChatId()).thenReturn(chatId);
+        String adminChatId = "test_admin_chat_id";
+        when(botProperties.getAdminChatId()).thenReturn(adminChatId);
+        
+        // Создаем экземпляр бота с тестовыми параметрами
+        volleyBot = new VolleyBot(botProperties, commandRegistry);
         
         // Настройка объектов Telegram API
         update = new Update();
@@ -216,7 +225,7 @@ public class VolleyBotTest {
         
         // Assert - проверяем, что метод execute был вызван с сообщением "Бот онлайн"
         verify(spyBot, times(1)).execute(argThat((SendMessage message) ->
-                message.getChatId().equals(adminChatId) &&
+                message.getChatId().equals(botProperties.getAdminChatId()) &&
             message.getText().equals("Бот онлайн")
         ));
     }
@@ -235,7 +244,7 @@ public class VolleyBotTest {
         
         // Assert - проверяем, что метод execute был вызван с правильными параметрами
         verify(spyBot, times(1)).execute(argThat((SendMessage message) ->
-            message.getChatId().equals(chatId) &&
+                message.getChatId().equals(botProperties.getChatId()) &&
             message.getText().equals(testMessage)
         ));
     }

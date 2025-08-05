@@ -2,13 +2,11 @@ package com.macrergate.command;
 
 import java.util.Arrays;
 
-import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.User;
-
 import com.macrergate.service.BookingService;
 import com.macrergate.service.SettingsService;
-
 import lombok.RequiredArgsConstructor;
+import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.User;
 
 /**
  * Абстрактный класс для обработчиков команд бота
@@ -65,11 +63,19 @@ public abstract class AbstractCommand implements Command {
      */
     protected String generateBookingsList() {
         var bookings = bookingService.getAllBookings();
+        var settings = settingsService.getSettings();
+
+        // Если нет записей, возвращаем стандартное сообщение без информации о времени
         if (bookings.isEmpty()) {
             return "На сегодня нет записей.";
         }
-        
-        StringBuilder sb = new StringBuilder("Список записавшихся на игру:\n");
+
+        StringBuilder sb = new StringBuilder();
+
+        // Добавляем информацию о времени начала игры
+        sb.append("🕒 Начало игры: ").append(settings.getCurrentGameTimeAsLocalTime()).append("\n\n");
+
+        sb.append("Список записавшихся на игру:\n");
         for (int i = 0; i < bookings.size(); i++) {
             var booking = bookings.get(i);
             sb.append(i + 1).append(". ").append(booking.getDisplayName());
@@ -79,7 +85,6 @@ public abstract class AbstractCommand implements Command {
             sb.append("\n");
         }
         
-        var settings = settingsService.getSettings();
         sb.append("\nВсего: ").append(bookings.size()).append("/").append(settings.getPlayerLimit());
         
         return sb.toString();

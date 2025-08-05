@@ -1,6 +1,7 @@
 package com.macrergate.config;
 
 import com.macrergate.bot.VolleyBot;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
@@ -11,6 +12,7 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
  * Конфигурация бота для Telegram
  */
 @Configuration
+@EnableConfigurationProperties(BotProperties.class)
 public class BotConfiguration {
     @Bean
     public TelegramBotsApi telegramBotsApi(VolleyBot volleyBot) throws TelegramApiException {

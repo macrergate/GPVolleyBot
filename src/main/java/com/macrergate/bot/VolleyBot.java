@@ -2,9 +2,9 @@ package com.macrergate.bot;
 
 import com.macrergate.command.Command;
 import com.macrergate.command.CommandRegistry;
+import com.macrergate.config.BotProperties;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -17,21 +17,13 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @Component
 @Slf4j
 public class VolleyBot extends TelegramLongPollingBot {
-    
-    private final String botUsername;
-    private final String chatId;
-    private final String adminChatId;
+
+    private final BotProperties botProperties;
     private final CommandRegistry commandRegistry;
 
-    public VolleyBot(@Value("${bot.token}") String botToken,
-                     @Value("${bot.username}") String botUsername,
-                     @Value("${bot.chatId}") String chatId,
-                     @Value("${bot.adminChatId}") String adminChatId,
-                     CommandRegistry commandRegistry) {
-        super(botToken);
-        this.botUsername = botUsername;
-        this.chatId = chatId;
-        this.adminChatId = adminChatId;
+    public VolleyBot(BotProperties botProperties, CommandRegistry commandRegistry) {
+        super(botProperties.getToken());
+        this.botProperties = botProperties;
         this.commandRegistry = commandRegistry;
     }
     
@@ -59,7 +51,7 @@ public class VolleyBot extends TelegramLongPollingBot {
      * @param text текст сообщения
      */
     public void sendMessageToGroup(String text) {
-        sendMessageToGroup(chatId, text, false);
+        sendMessageToGroup(botProperties.getChatId(), text, false);
     }
 
     /**
@@ -67,8 +59,9 @@ public class VolleyBot extends TelegramLongPollingBot {
      *
      * @param text текст сообщения
      */
+    @SuppressWarnings("unused")
     public void sendSilentMessageToGroup(String text) {
-        sendMessageToGroup(chatId, text, true);
+        sendMessageToGroup(botProperties.getChatId(), text, true);
     }
 
     /**
@@ -77,7 +70,7 @@ public class VolleyBot extends TelegramLongPollingBot {
      * @param text текст сообщения
      */
     public void sendMessageToAdmin(String text, boolean silent) {
-        sendMessageToGroup(adminChatId, text, silent);
+        sendMessageToGroup(botProperties.getAdminChatId(), text, silent);
     }
 
     /**
@@ -100,7 +93,7 @@ public class VolleyBot extends TelegramLongPollingBot {
     
     @Override
     public String getBotUsername() {
-        return botUsername;
+        return botProperties.getUsername();
     }
     
     @Override
