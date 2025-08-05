@@ -109,7 +109,7 @@ public class OpenCommandHandlerTest {
         assertThat(response).contains("User 1");
         assertThat(response).contains("User 2");
         verify(settingsService).openBooking();
-        verify(settingsService).updateCurrentGame(eq("Сегодня"), eq(LocalTime.of(18, 0)), any(LocalDate.class));
+        verify(settingsService).updateCurrentGame(eq(LocalTime.of(18, 0)), any(LocalDate.class));
     }
 
     @Test
@@ -125,7 +125,7 @@ public class OpenCommandHandlerTest {
         // Assert
         assertThat(response).contains("✅ Запись на игру открыта");
         verify(settingsService).openBooking();
-        verify(settingsService).updateCurrentGame(eq("Сегодня"), eq(LocalTime.of(19, 0)), any(LocalDate.class));
+        verify(settingsService).updateCurrentGame(eq(LocalTime.of(19, 0)), any(LocalDate.class));
     }
     
     @Test
@@ -138,7 +138,7 @@ public class OpenCommandHandlerTest {
 
         // Assert
         assertThat(response).contains("❌ Запись на игру уже открыта");
-        verify(settingsService, never()).updateCurrentGame(any(), any(), any());
+        verify(settingsService, never()).updateCurrentGame(any(), any());
     }
 
     @Test
@@ -153,7 +153,7 @@ public class OpenCommandHandlerTest {
 
         // Assert
         assertThat(response).contains("✅ Время начала игры обновлено");
-        verify(settingsService).updateCurrentGame(eq("Сегодня"), eq(LocalTime.of(19, 0)), any(LocalDate.class));
+        verify(settingsService).updateCurrentGame(eq(LocalTime.of(19, 0)), any(LocalDate.class));
     }
 
     @Test
@@ -169,7 +169,7 @@ public class OpenCommandHandlerTest {
 
         // Assert
         assertThat(response).contains("❌ Неверный формат времени");
-        verify(settingsService, never()).updateCurrentGame(any(), any(), any());
+        verify(settingsService, never()).updateCurrentGame(any(), any());
         verify(settingsService, never()).openBooking();
     }
     

@@ -39,7 +39,6 @@ public class RepositoryIntegrationTest {
         Settings settings = new Settings();
         settings.setId(1L);
         settings.setPlayerLimit(Settings.DEFAULT_PLAYER_LIMIT);
-        settings.setCurrentGameDay("Вторник");
         settings.setCurrentGameTimeAsLocalTime(LocalTime.of(18, 0));
         settings.setCurrentGameDateAsLocalDate(LocalDate.now());
 
@@ -51,7 +50,6 @@ public class RepositoryIntegrationTest {
         assertThat(foundSettings).isPresent();
         assertThat(foundSettings.get().getId()).isEqualTo(savedSettings.getId());
         assertThat(foundSettings.get().getPlayerLimit()).isEqualTo(Settings.DEFAULT_PLAYER_LIMIT);
-        assertThat(foundSettings.get().getCurrentGameDay()).isEqualTo("Вторник");
         assertThat(foundSettings.get().getCurrentGameTimeAsLocalTime()).isEqualTo(LocalTime.of(18, 0));
         assertThat(foundSettings.get().getCurrentGameDateAsLocalDate()).isEqualTo(LocalDate.now());
     }

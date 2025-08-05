@@ -1,10 +1,9 @@
 package com.macrergate.command;
 
-import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.objects.Update;
-
 import com.macrergate.service.BookingService;
 import com.macrergate.service.SettingsService;
+import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.objects.Update;
 
 /**
  * Обработчик команды /close для ручного закрытия записи на игру
@@ -25,8 +24,8 @@ public class CloseCommandHandler extends AbstractCommand {
         
         // Закрываем запись
         settingsService.closeBooking();
-        
-        return "✅ Запись на игру закрыта.\n\n" + generateBookingsList();
+
+        return "✅ Запись на игру закрыта.";
     }
     
     @Override

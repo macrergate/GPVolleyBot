@@ -30,29 +30,23 @@ public class NotificationSchedulerTest {
     
     @InjectMocks
     private NotificationScheduler notificationScheduler;
-    
-    private Settings settings;
 
     @BeforeEach
     void setUp() {
-        settings = new Settings();
+        Settings settings = new Settings();
         settings.setId(1L);
         settings.setPlayerLimit(Settings.DEFAULT_PLAYER_LIMIT);
-        settings.setCurrentGameDay("Вторник");
         settings.setCurrentGameTimeAsLocalTime(LocalTime.of(18, 0));
         settings.setCurrentGameDateAsLocalDate(LocalDate.now());
     }
     
     @Test
     void testSendTuesdayNotification() {
-        // Arrange
-        when(settingsService.getSettings()).thenReturn(settings);
-        
         // Act
         notificationScheduler.sendTuesdayNotification();
         
         // Assert
-        verify(settingsService, times(1)).updateCurrentGame(eq("Вторник"), eq(LocalTime.of(18, 0)), any(LocalDate.class));
+        verify(settingsService, times(1)).updateCurrentGame(eq(LocalTime.of(18, 0)), any(LocalDate.class));
         verify(notificationService, times(1)).sendOpenBookingNotification();
     }
     
@@ -62,7 +56,7 @@ public class NotificationSchedulerTest {
         notificationScheduler.sendThursdayNotification();
         
         // Assert
-        verify(settingsService, times(1)).updateCurrentGame(eq("Четверг"), eq(LocalTime.of(18, 0)), any(LocalDate.class));
+        verify(settingsService, times(1)).updateCurrentGame(eq(LocalTime.of(18, 0)), any(LocalDate.class));
         verify(notificationService, times(1)).sendOpenBookingNotification();
     }
     
@@ -72,14 +66,13 @@ public class NotificationSchedulerTest {
         notificationScheduler.sendSundayNotification();
         
         // Assert
-        verify(settingsService, times(1)).updateCurrentGame(eq("Воскресенье"), eq(LocalTime.of(17, 0)), any(LocalDate.class));
+        verify(settingsService, times(1)).updateCurrentGame(eq(LocalTime.of(17, 0)), any(LocalDate.class));
         verify(notificationService, times(1)).sendOpenBookingNotification();
     }
     
     @Test
-    void testCloseBooking_WhenGameTodayAndBookingOpen() {
+    void testCloseBooking_WhenBookingOpen() {
         // Arrange
-        when(settingsService.isGameToday()).thenReturn(true);
         when(settingsService.isBookingOpen()).thenReturn(true);
         
         // Act
@@ -88,23 +81,10 @@ public class NotificationSchedulerTest {
         // Assert
         verify(notificationService, times(1)).sendCloseBookingNotification();
     }
-    
-    @Test
-    void testCloseBooking_WhenNoGameToday() {
-        // Arrange
-        when(settingsService.isGameToday()).thenReturn(false);
-        
-        // Act
-        notificationScheduler.closeBooking();
-        
-        // Assert
-        verify(notificationService, times(0)).sendCloseBookingNotification();
-    }
-    
+
     @Test
     void testCloseBooking_WhenBookingNotOpen() {
         // Arrange
-        when(settingsService.isGameToday()).thenReturn(true);
         when(settingsService.isBookingOpen()).thenReturn(false);
         
         // Act

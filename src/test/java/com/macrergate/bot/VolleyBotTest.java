@@ -70,7 +70,7 @@ public class VolleyBotTest {
         when(botProperties.getAdminChatId()).thenReturn(adminChatId);
         
         // Создаем экземпляр бота с тестовыми параметрами
-        volleyBot = new VolleyBot(botProperties, commandRegistry);
+        volleyBot = new VolleyBot(botProperties, commandRegistry, listCommandHandler);
         
         // Настройка объектов Telegram API
         update = new Update();
@@ -219,7 +219,8 @@ public class VolleyBotTest {
         // Arrange
         VolleyBot spyBot = spy(volleyBot);
         doAnswer(invocation -> null).when(spyBot).execute(any(SendMessage.class));
-        
+        when(listCommandHandler.execute()).thenReturn("Test response");
+
         // Act
         spyBot.sendOnlineMessage();
         
@@ -236,15 +237,14 @@ public class VolleyBotTest {
         VolleyBot spyBot = spy(volleyBot);
         doAnswer(invocation -> null).when(spyBot).execute(any(SendMessage.class));
         String testMessage = "Тестовое сообщение";
-        
-        // Act - вызываем приватный метод через рефлексию
-        java.lang.reflect.Method method = VolleyBot.class.getDeclaredMethod("sendMessageToGroup", String.class);
-        method.setAccessible(true);
-        method.invoke(spyBot, testMessage);
-        
+        String testChatId = "Тестовый чат идентификатор";
+
+        // Act
+        spyBot.sendMessageToGroup(testChatId, testMessage);
+
         // Assert - проверяем, что метод execute был вызван с правильными параметрами
         verify(spyBot, times(1)).execute(argThat((SendMessage message) ->
-                message.getChatId().equals(botProperties.getChatId()) &&
+                message.getChatId().equals(testChatId) &&
             message.getText().equals(testMessage)
         ));
     }

@@ -1,10 +1,7 @@
 package com.macrergate.service;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.TextStyle;
-import java.util.Locale;
 import java.util.Optional;
 
 import com.macrergate.model.Settings;
@@ -38,7 +35,6 @@ public class SettingsServiceTest {
         settings = new Settings();
         settings.setId(1L);
         settings.setPlayerLimit(Settings.DEFAULT_PLAYER_LIMIT);
-        settings.setCurrentGameDay("Вторник");
         settings.setCurrentGameTimeAsLocalTime(LocalTime.of(18, 0));
         settings.setCurrentGameDateAsLocalDate(LocalDate.now());
         settings.setBookingOpen(false);
@@ -55,7 +51,6 @@ public class SettingsServiceTest {
         // Assert
         assertThat(result).isNotNull();
         assertThat(result.getPlayerLimit()).isEqualTo(Settings.DEFAULT_PLAYER_LIMIT);
-        assertThat(result.getCurrentGameDay()).isEqualTo("Вторник");
         assertThat(result.isBookingOpen()).isFalse();
     }
     
@@ -88,38 +83,7 @@ public class SettingsServiceTest {
         verify(settingsRepository, times(1)).save(any(Settings.class));
         assertThat(settings.getPlayerLimit()).isEqualTo(25);
     }
-    
-    @Test
-    void testIsGameTodayWhenTrue() {
-        // Arrange
-        String today = LocalDate.now().getDayOfWeek().getDisplayName(TextStyle.FULL, new Locale("ru"));
-        settings.setCurrentGameDay(today);
-        when(settingsRepository.findSettings()).thenReturn(Optional.of(settings));
-        
-        // Act
-        boolean result = settingsService.isGameToday();
-        
-        // Assert
-        assertThat(result).isTrue();
-    }
-    
-    @Test
-    void testIsGameTodayWhenFalse() {
-        // Arrange
-        DayOfWeek tomorrow = LocalDate.now().getDayOfWeek().plus(1);
-        String tomorrowStr = tomorrow.getDisplayName(TextStyle.FULL, new Locale("ru"));
-        settings.setCurrentGameDay(tomorrowStr);
-        // Устанавливаем дату на завтра, а не на сегодня
-        settings.setCurrentGameDateAsLocalDate(LocalDate.now().plusDays(1));
-        when(settingsRepository.findSettings()).thenReturn(Optional.of(settings));
-        
-        // Act
-        boolean result = settingsService.isGameToday();
-        
-        // Assert
-        assertThat(result).isFalse();
-    }
-    
+
     @Test
     void testUpdateCurrentGame() {
         // Arrange
@@ -127,11 +91,10 @@ public class SettingsServiceTest {
         when(settingsRepository.save(any(Settings.class))).thenReturn(settings);
         
         // Act
-        settingsService.updateCurrentGame("Среда", LocalTime.of(19, 30), LocalDate.now().plusDays(1));
+        settingsService.updateCurrentGame(LocalTime.of(19, 30), LocalDate.now().plusDays(1));
         
         // Assert
         verify(settingsRepository, times(1)).save(any(Settings.class));
-        assertThat(settings.getCurrentGameDay()).isEqualTo("Среда");
         assertThat(settings.getCurrentGameTimeAsLocalTime()).isEqualTo(LocalTime.of(19, 30));
         assertThat(settings.getCurrentGameDateAsLocalDate()).isEqualTo(LocalDate.now().plusDays(1));
     }

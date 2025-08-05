@@ -42,7 +42,7 @@ public class OpenCommandHandler extends AbstractCommand {
         }
 
         // Обновляем время начала игры
-        settingsService.updateCurrentGame("Сегодня", gameTime, LocalDate.now());
+        settingsService.updateCurrentGame(gameTime, LocalDate.now());
 
         // Открываем запись, если она еще не открыта
         if (!isAlreadyOpen) {

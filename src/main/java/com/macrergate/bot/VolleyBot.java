@@ -2,6 +2,7 @@ package com.macrergate.bot;
 
 import com.macrergate.command.Command;
 import com.macrergate.command.CommandRegistry;
+import com.macrergate.command.ListCommandHandler;
 import com.macrergate.config.BotProperties;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -20,11 +21,16 @@ public class VolleyBot extends TelegramLongPollingBot {
 
     private final BotProperties botProperties;
     private final CommandRegistry commandRegistry;
+    private final ListCommandHandler listCommandHandler;
 
-    public VolleyBot(BotProperties botProperties, CommandRegistry commandRegistry) {
+    public VolleyBot(BotProperties botProperties,
+                     CommandRegistry commandRegistry,
+                     ListCommandHandler listCommandHandler
+    ) {
         super(botProperties.getToken());
         this.botProperties = botProperties;
         this.commandRegistry = commandRegistry;
+        this.listCommandHandler = listCommandHandler;
     }
     
     /**
@@ -34,7 +40,8 @@ public class VolleyBot extends TelegramLongPollingBot {
     @PostConstruct
     public void sendOnlineMessage() {
         sendMessageToAdmin("Бот онлайн", true);
-        
+
+        sendMessageToAdmin(listCommandHandler.execute(), true);
         // Регистрируем хук для отправки сообщения при завершении работы
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
@@ -49,19 +56,21 @@ public class VolleyBot extends TelegramLongPollingBot {
      * Метод для отправки сообщения в группу
      *
      * @param text текст сообщения
+     * @param chatId идентификатор групы
      */
-    public void sendMessageToGroup(String text) {
-        sendMessageToGroup(botProperties.getChatId(), text, false);
+    public void sendMessageToGroup(String chatId, String text) {
+        sendMessageToGroup(chatId, text, true);
     }
 
     /**
      * Метод для отправки сообщения в группу без звука
      *
      * @param text текст сообщения
+     * @param chatId идентификатор групы
      */
     @SuppressWarnings("unused")
-    public void sendSilentMessageToGroup(String text) {
-        sendMessageToGroup(botProperties.getChatId(), text, true);
+    public void sendLoudMessageToGroup(String chatId, String text) {
+        sendMessageToGroup(chatId, text, false);
     }
 
     /**
@@ -124,7 +133,11 @@ public class VolleyBot extends TelegramLongPollingBot {
         
         // Отправляем ответ пользователю
         if (response != null && !response.isEmpty()) {
-            sendMessageToGroup(response);
+            sendMessageToGroup(String.valueOf(update.getMessage().getChatId()), response);
         }
+    }
+
+    public void sendLoudMessageToMainGroup(String message) {
+        sendLoudMessageToGroup(botProperties.getChatId(), message);
     }
 }

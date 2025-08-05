@@ -28,21 +28,14 @@ public class SettingsService {
         settings.setPlayerLimit(limit);
         settingsRepository.save(settings);
     }
-    
-    public void updateCurrentGame(String day, LocalTime time, LocalDate date) {
+
+    public void updateCurrentGame(LocalTime time, LocalDate date) {
         Settings settings = getSettings();
-        settings.setCurrentGameDay(day);
         settings.setCurrentGameTimeAsLocalTime(time);
         settings.setCurrentGameDateAsLocalDate(date);
         settingsRepository.save(settings);
     }
-    
-    public boolean isGameToday() {
-        Settings settings = getSettings();
-        LocalDate currentGameDate = settings.getCurrentGameDateAsLocalDate();
-        return currentGameDate != null && currentGameDate.equals(LocalDate.now());
-    }
-    
+
     public boolean isBookingOpen() {
         Settings settings = getSettings();
         return settings.isBookingOpen();

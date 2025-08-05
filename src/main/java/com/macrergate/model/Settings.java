@@ -14,6 +14,7 @@ public class Settings {
     @Id
     private Long id = 1L; // Всегда 1
     private int playerLimit = DEFAULT_PLAYER_LIMIT;
+    @Deprecated
     private String currentGameDay;
     private String currentGameTime;
     private String currentGameDate;
