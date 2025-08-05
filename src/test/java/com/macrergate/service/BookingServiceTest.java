@@ -96,14 +96,31 @@ public class BookingServiceTest {
         // Arrange
         when(settingsService.isBookingOpen()).thenReturn(true);
         when(bookingRepository.findByUserId("user1")).thenReturn(Optional.of(booking1));
-        when(settingsService.getSettings()).thenReturn(settings); // Добавляем заглушку для getSettings
-        
-        // Act
-        BookingService.BookingResult result = bookingService.bookGame("user1", "User 1", LocalTime.of(18, 30));
+        when(settingsService.getSettings()).thenReturn(settings);
+
+        // Act - без указания времени
+        BookingService.BookingResult result = bookingService.bookGame("user1", "User 1", null);
         
         // Assert
         assertThat(result).isEqualTo(BookingService.BookingResult.ALREADY_BOOKED);
         verify(bookingRepository, times(0)).save(any(Booking.class));
+    }
+
+    @Test
+    void testUpdateArrivalTime() {
+        // Arrange
+        when(settingsService.isBookingOpen()).thenReturn(true);
+        when(settingsService.getSettings()).thenReturn(settings);
+        when(bookingRepository.findByUserId("user1")).thenReturn(Optional.of(booking1));
+        when(bookingRepository.save(any(Booking.class))).thenReturn(booking1);
+
+        // Act - с указанием нового времени
+        LocalTime newTime = LocalTime.of(19, 0);
+        BookingService.BookingResult result = bookingService.bookGame("user1", "User 1", newTime);
+
+        // Assert
+        assertThat(result).isEqualTo(BookingService.BookingResult.TIME_UPDATED);
+        verify(bookingRepository, times(1)).save(any(Booking.class));
     }
     
     @Test

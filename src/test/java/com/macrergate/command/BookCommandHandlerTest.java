@@ -139,6 +139,24 @@ public class BookCommandHandlerTest {
 
         // Assert
         assertThat(response).contains("❌ Не удалось записаться: вы уже записаны на эту игру");
+        assertThat(response).contains("Чтобы изменить время прихода, используйте команду /book ЧЧ:ММ");
+    }
+
+    @Test
+    void testExecute_TimeUpdated() {
+        // Arrange
+        when(bookingService.bookGame(anyString(), anyString(), any(LocalTime.class)))
+                .thenReturn(BookingResult.TIME_UPDATED);
+        when(bookingService.getAllBookings()).thenReturn(bookings);
+        when(settingsService.getSettings()).thenReturn(settings);
+
+        // Act
+        String response = bookCommandHandler.execute(update);
+
+        // Assert
+        assertThat(response).contains("✅ Время вашего прихода обновлено!");
+        assertThat(response).contains("User 1");
+        assertThat(response).contains("User 2");
     }
 
     @Test

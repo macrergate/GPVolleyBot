@@ -5,13 +5,11 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.stereotype.Service;
-
 import com.macrergate.model.Booking;
 import com.macrergate.model.Settings;
 import com.macrergate.repository.BookingRepository;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -19,29 +17,29 @@ public class BookingService {
     private final BookingRepository bookingRepository;
     private final SettingsService settingsService;
     
-    public enum BookingResult {
-        SUCCESS,
-        PLAYER_LIMIT_REACHED,
-        ALREADY_BOOKED,
-        BOOKING_CLOSED
-    }
-    
     public BookingResult bookGame(String userId, String displayName, LocalTime arrivalTime) {
         if (!settingsService.isBookingOpen()) {
             return BookingResult.BOOKING_CLOSED;
         }
-        
+
         Settings settings = settingsService.getSettings();
         List<Booking> bookings = bookingRepository.findAllBookings();
         if (bookings.size() >= settings.getPlayerLimit()) {
             return BookingResult.PLAYER_LIMIT_REACHED;
         }
-        
+
         Optional<Booking> existingBooking = bookingRepository.findByUserId(userId);
         if (existingBooking.isPresent()) {
+            // Если пользователь уже записан и указано время прихода, обновляем его
+            if (arrivalTime != null) {
+                Booking booking = existingBooking.get();
+                booking.setArrivalTimeAsLocalTime(arrivalTime);
+                bookingRepository.save(booking);
+                return BookingResult.TIME_UPDATED;
+            }
             return BookingResult.ALREADY_BOOKED;
         }
-        
+
         Booking booking = new Booking();
         booking.setUserId(userId);
         booking.setDisplayName(displayName);
@@ -49,9 +47,17 @@ public class BookingService {
         if (arrivalTime != null) {
             booking.setArrivalTimeAsLocalTime(arrivalTime);
         }
-        
+
         bookingRepository.save(booking);
         return BookingResult.SUCCESS;
+    }
+
+    public enum BookingResult {
+        SUCCESS,
+        PLAYER_LIMIT_REACHED,
+        ALREADY_BOOKED,
+        BOOKING_CLOSED,
+        TIME_UPDATED
     }
     
     public boolean cancelBooking(String userId) {
