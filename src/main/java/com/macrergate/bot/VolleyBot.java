@@ -5,6 +5,7 @@ import com.macrergate.command.CommandRegistry;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -13,20 +14,24 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 /**
  * Основной класс бота для Telegram
  */
+@Component
 @Slf4j
 public class VolleyBot extends TelegramLongPollingBot {
     
     private final String botUsername;
     private final String chatId;
+    private final String adminChatId;
     private final CommandRegistry commandRegistry;
 
     public VolleyBot(@Value("${bot.token}") String botToken,
                      @Value("${bot.username}") String botUsername,
                      @Value("${bot.chatId}") String chatId,
+                     @Value("${bot.adminChatId}") String adminChatId,
                      CommandRegistry commandRegistry) {
         super(botToken);
         this.botUsername = botUsername;
         this.chatId = chatId;
+        this.adminChatId = adminChatId;
         this.commandRegistry = commandRegistry;
     }
     
@@ -36,12 +41,12 @@ public class VolleyBot extends TelegramLongPollingBot {
      */
     @PostConstruct
     public void sendOnlineMessage() {
-        sendMessageToGroup("Бот онлайн", true);
+        sendMessageToAdmin("Бот онлайн", true);
         
         // Регистрируем хук для отправки сообщения при завершении работы
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
-                sendMessageToGroup("Бот офлайн", true);
+                sendMessageToAdmin("Бот офлайн", true);
             } catch (Exception e) {
                 log.error("Ошибка при отправке сообщения о завершении работы", e);
             }
@@ -49,18 +54,36 @@ public class VolleyBot extends TelegramLongPollingBot {
     }
 
     /**
-     * Вспомогательный метод для отправки сообщения в группу
+     * Метод для отправки сообщения в группу
      *
      * @param text текст сообщения
      */
-    private void sendMessageToGroup(String text) {
-        sendMessageToGroup(text, false);
+    public void sendMessageToGroup(String text) {
+        sendMessageToGroup(chatId, text, false);
     }
 
     /**
-     * Вспомогательный метод для отправки сообщения без звука в группу
+     * Метод для отправки сообщения в группу без звука
+     *
+     * @param text текст сообщения
      */
-    private void sendMessageToGroup(String text, boolean silent) {
+    public void sendSilentMessageToGroup(String text) {
+        sendMessageToGroup(chatId, text, true);
+    }
+
+    /**
+     * Метод для отправки сообщения админу
+     *
+     * @param text текст сообщения
+     */
+    public void sendMessageToAdmin(String text, boolean silent) {
+        sendMessageToGroup(adminChatId, text, silent);
+    }
+
+    /**
+     * Метод для отправки сообщения без звука в группу
+     */
+    private void sendMessageToGroup(String chatId, String text, boolean silent) {
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
         message.setText(text);
@@ -95,7 +118,7 @@ public class VolleyBot extends TelegramLongPollingBot {
         
         // Извлекаем имя команды (без слеша)
         String[] parts = messageText.split(" ", 2);
-        String commandName = parts[0].substring(1); // Убираем слеш
+        String commandName = parts[0].substring(1).trim().toLowerCase(); // Убираем слеш и пробелы
         
         // Проверяем, существует ли такая команда
         if (!commandRegistry.hasCommand(commandName)) {

@@ -14,8 +14,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -39,8 +37,7 @@ public class NotificationServiceTest {
     
     private Settings settings;
     private List<Booking> bookings;
-    private final String chatId = "123456789";
-    
+
     @BeforeEach
     void setUp() {
         settings = new Settings();
@@ -68,45 +65,45 @@ public class NotificationServiceTest {
     }
     
     @Test
-    void testSendOpenBookingNotification() throws TelegramApiException {
+    void testSendOpenBookingNotification() {
         // Arrange
         when(settingsService.getSettings()).thenReturn(settings);
         
         // Act
-        notificationService.sendOpenBookingNotification(chatId);
+        notificationService.sendOpenBookingNotification();
         
         // Assert
-        verify(bot, times(1)).execute(any(SendMessage.class));
+        verify(bot, times(1)).sendMessageToGroup(any(String.class));
         verify(bookingService, times(1)).clearAllBookings();
         verify(settingsService, times(1)).updateCurrentGame(any(), any(), any());
         verify(settingsService, times(1)).openBooking();
     }
     
     @Test
-    void testSendCloseBookingNotification() throws TelegramApiException {
+    void testSendCloseBookingNotification() {
         // Arrange
         when(settingsService.getSettings()).thenReturn(settings);
         when(bookingService.getAllBookings()).thenReturn(bookings);
         
         // Act
-        notificationService.sendCloseBookingNotification(chatId);
+        notificationService.sendCloseBookingNotification();
         
         // Assert
-        verify(bot, times(1)).execute(any(SendMessage.class));
+        verify(bot, times(1)).sendMessageToGroup(any(String.class));
         verify(settingsService, times(1)).closeBooking();
     }
     
     @Test
-    void testSendCloseBookingNotificationWithNoBookings() throws TelegramApiException {
+    void testSendCloseBookingNotificationWithNoBookings() {
         // Arrange
         when(settingsService.getSettings()).thenReturn(settings);
         when(bookingService.getAllBookings()).thenReturn(new ArrayList<>());
         
         // Act
-        notificationService.sendCloseBookingNotification(chatId);
+        notificationService.sendCloseBookingNotification();
         
         // Assert
-        verify(bot, times(1)).execute(any(SendMessage.class));
+        verify(bot, times(1)).sendMessageToGroup(any(String.class));
         verify(settingsService, times(1)).closeBooking();
     }
 }

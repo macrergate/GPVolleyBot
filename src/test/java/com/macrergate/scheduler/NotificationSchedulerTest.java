@@ -12,10 +12,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -34,8 +32,7 @@ public class NotificationSchedulerTest {
     private NotificationScheduler notificationScheduler;
     
     private Settings settings;
-    private final String chatId = "123456789";
-    
+
     @BeforeEach
     void setUp() {
         settings = new Settings();
@@ -44,9 +41,6 @@ public class NotificationSchedulerTest {
         settings.setCurrentGameDay("Вторник");
         settings.setCurrentGameTimeAsLocalTime(LocalTime.of(18, 0));
         settings.setCurrentGameDateAsLocalDate(LocalDate.now());
-        
-        // Устанавливаем значение chatId через рефлексию
-        ReflectionTestUtils.setField(notificationScheduler, "chatId", chatId);
     }
     
     @Test
@@ -59,7 +53,7 @@ public class NotificationSchedulerTest {
         
         // Assert
         verify(settingsService, times(1)).updateCurrentGame(eq("Вторник"), eq(LocalTime.of(18, 0)), any(LocalDate.class));
-        verify(notificationService, times(1)).sendOpenBookingNotification(chatId);
+        verify(notificationService, times(1)).sendOpenBookingNotification();
     }
     
     @Test
@@ -69,7 +63,7 @@ public class NotificationSchedulerTest {
         
         // Assert
         verify(settingsService, times(1)).updateCurrentGame(eq("Четверг"), eq(LocalTime.of(18, 0)), any(LocalDate.class));
-        verify(notificationService, times(1)).sendOpenBookingNotification(chatId);
+        verify(notificationService, times(1)).sendOpenBookingNotification();
     }
     
     @Test
@@ -79,7 +73,7 @@ public class NotificationSchedulerTest {
         
         // Assert
         verify(settingsService, times(1)).updateCurrentGame(eq("Воскресенье"), eq(LocalTime.of(17, 0)), any(LocalDate.class));
-        verify(notificationService, times(1)).sendOpenBookingNotification(chatId);
+        verify(notificationService, times(1)).sendOpenBookingNotification();
     }
     
     @Test
@@ -92,7 +86,7 @@ public class NotificationSchedulerTest {
         notificationScheduler.closeBooking();
         
         // Assert
-        verify(notificationService, times(1)).sendCloseBookingNotification(chatId);
+        verify(notificationService, times(1)).sendCloseBookingNotification();
     }
     
     @Test
@@ -104,7 +98,7 @@ public class NotificationSchedulerTest {
         notificationScheduler.closeBooking();
         
         // Assert
-        verify(notificationService, times(0)).sendCloseBookingNotification(anyString());
+        verify(notificationService, times(0)).sendCloseBookingNotification();
     }
     
     @Test
@@ -117,6 +111,6 @@ public class NotificationSchedulerTest {
         notificationScheduler.closeBooking();
         
         // Assert
-        verify(notificationService, times(0)).sendCloseBookingNotification(anyString());
+        verify(notificationService, times(0)).sendCloseBookingNotification();
     }
 }

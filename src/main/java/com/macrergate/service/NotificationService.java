@@ -9,8 +9,6 @@ import com.macrergate.model.Booking;
 import com.macrergate.model.Settings;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Service
 @RequiredArgsConstructor
@@ -18,8 +16,8 @@ public class NotificationService {
     private final VolleyBot bot;
     private final SettingsService settingsService;
     private final BookingService bookingService;
-    
-    public void sendOpenBookingNotification(String chatId) {
+
+    public void sendOpenBookingNotification() {
         Settings settings = settingsService.getSettings();
         LocalTime gameTime = settings.getCurrentGameTimeAsLocalTime();
         String gameDay = settings.getCurrentGameDay();
@@ -44,19 +42,11 @@ public class NotificationService {
         String message = "🏐 Запись на игру сегодня (" + gameDay + ") в " + gameTime + " открыта!\n" +
                          "Для записи используйте команду /book\n" +
                          "Лимит игроков: " + settings.getPlayerLimit();
-        
-        SendMessage sendMessage = new SendMessage();
-        sendMessage.setChatId(chatId);
-        sendMessage.setText(message);
-        
-        try {
-            bot.execute(sendMessage);
-        } catch (TelegramApiException e) {
-            // Обработка ошибки
-        }
+
+        bot.sendMessageToGroup(message);
     }
-    
-    public void sendCloseBookingNotification(String chatId) {
+
+    public void sendCloseBookingNotification() {
         Settings settings = settingsService.getSettings();
         LocalTime gameTime = settings.getCurrentGameTimeAsLocalTime();
         String gameDay = settings.getCurrentGameDay();
@@ -88,15 +78,7 @@ public class NotificationService {
         } else {
             message.append("Никто не записался на игру.");
         }
-        
-        SendMessage sendMessage = new SendMessage();
-        sendMessage.setChatId(chatId);
-        sendMessage.setText(message.toString());
-        
-        try {
-            bot.execute(sendMessage);
-        } catch (TelegramApiException e) {
-            // Обработка ошибки
-        }
+
+        bot.sendMessageToGroup(message.toString());
     }
 }

@@ -1,5 +1,23 @@
 package com.macrergate.bot;
 
+import com.macrergate.command.BookCommandHandler;
+import com.macrergate.command.CancelCommandHandler;
+import com.macrergate.command.CommandRegistry;
+import com.macrergate.command.LimitCommandHandler;
+import com.macrergate.command.ListCommandHandler;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Chat;
+import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.User;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
@@ -8,26 +26,6 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
-import org.telegram.telegrambots.meta.api.objects.Chat;
-import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.User;
-
-import com.macrergate.command.BookCommandHandler;
-import com.macrergate.command.CancelCommandHandler;
-import com.macrergate.command.CommandRegistry;
-import com.macrergate.command.LimitCommandHandler;
-import com.macrergate.command.ListCommandHandler;
 
 /**
  * Тесты для класса VolleyBot
@@ -55,22 +53,21 @@ public class VolleyBotTest {
     
     private Update update;
     private Message message;
-    private User user;
-    private Chat chat;
-    private String botToken = "test_token";
-    private String botUsername = "TestBot";
-    private String chatId = "test_chat_id";
-    
+    private final String botUsername = "TestBot";
+    private final String chatId = "test_chat_id";
+    private final String adminChatId = "test_admin_chat_id";
+
     @BeforeEach
     void setUp() {
         // Создаем экземпляр бота с тестовыми параметрами
-        volleyBot = new VolleyBot(botToken, botUsername, chatId, commandRegistry);
+        String botToken = "test_token";
+        volleyBot = new VolleyBot(botToken, botUsername, chatId, adminChatId, commandRegistry);
         
         // Настройка объектов Telegram API
         update = new Update();
         message = new Message();
-        user = new User();
-        chat = new Chat();
+        User user = new User();
+        Chat chat = new Chat();
         
         user.setId(123456789L);
         user.setFirstName("Test");
@@ -219,7 +216,7 @@ public class VolleyBotTest {
         
         // Assert - проверяем, что метод execute был вызван с сообщением "Бот онлайн"
         verify(spyBot, times(1)).execute(argThat((SendMessage message) ->
-            message.getChatId().equals(chatId) &&
+                message.getChatId().equals(adminChatId) &&
             message.getText().equals("Бот онлайн")
         ));
     }
