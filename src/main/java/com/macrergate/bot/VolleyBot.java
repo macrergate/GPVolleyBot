@@ -121,7 +121,7 @@ public class VolleyBot extends TelegramLongPollingBot {
         // Извлекаем имя команды (без слеша)
         String[] parts = messageText.split(" ", 2);
 
-        String commandName = parts[0].substring(1).trim().toLowerCase(); // Убираем слеш и пробелы
+        String commandName = parts[0].substring(1); // Убираем слеш и пробелы
 
 
         boolean botMention = false;
@@ -134,7 +134,7 @@ public class VolleyBot extends TelegramLongPollingBot {
         if (!commandRegistry.hasCommand(commandName)) {
             if (botMention) {
                 sendMessageToGroup(
-                        update.getMessage().getChatId(), "Неизвестная команда: '" + commandName + "'"
+                        update.getMessage().getChatId(), "❌ Неизвестная команда: '" + commandName + "'!"
                 );
             }
             return;

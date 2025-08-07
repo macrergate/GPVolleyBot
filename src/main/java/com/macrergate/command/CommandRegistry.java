@@ -4,10 +4,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.stereotype.Component;
-
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 /**
  * Реестр всех доступных команд бота
@@ -28,27 +27,31 @@ public class CommandRegistry {
             commandMap.put(command.getCommandName(), command);
         }
     }
+
+    private static String normalize(String commandName) {
+        return commandName.toLowerCase();
+    }
     
     /**
      * Возвращает команду по ее имени
-     * 
+     *
      * @param commandName Имя команды (без слеша)
      * @return Команда или null, если команда не найдена
      */
     public Command getCommand(String commandName) {
-        return commandMap.get(commandName);
+        return commandMap.get(normalize(commandName));
     }
-    
+
     /**
      * Проверяет, существует ли команда с указанным именем
-     * 
+     *
      * @param commandName Имя команды (без слеша)
      * @return true, если команда существует, иначе false
      */
     public boolean hasCommand(String commandName) {
-        return commandMap.containsKey(commandName);
+        return commandMap.containsKey(normalize(commandName));
     }
-    
+
     /**
      * Возвращает список всех доступных команд
      * 

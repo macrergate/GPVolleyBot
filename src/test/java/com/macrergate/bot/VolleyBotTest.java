@@ -10,14 +10,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -59,7 +62,7 @@ public class VolleyBotTest {
     private BotProperties botProperties;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws TelegramApiException {
         // Настраиваем мок BotProperties
         String botToken = "test_token";
         when(botProperties.getToken()).thenReturn(botToken);
@@ -70,8 +73,9 @@ public class VolleyBotTest {
         when(botProperties.getAdminChatId()).thenReturn(adminChatId);
         
         // Создаем экземпляр бота с тестовыми параметрами
-        volleyBot = new VolleyBot(botProperties, commandRegistry, listCommandHandler);
-        
+        volleyBot = Mockito.spy(new VolleyBot(botProperties, commandRegistry, listCommandHandler));
+        //noinspection unchecked
+        Mockito.doReturn(null).when(volleyBot).execute(any(BotApiMethod.class));
         // Настройка объектов Telegram API
         update = new Update();
         message = new Message();
@@ -122,7 +126,24 @@ public class VolleyBotTest {
         verify(commandRegistry, times(1)).getCommand("book");
         verify(bookCommandHandler, times(1)).execute(update);
     }
-    
+
+    @Test
+    void testOnUpdateReceived_BookCommandWithBotUserName() {
+        // Arrange
+        message.setText("/book@" + botUsername);
+        when(commandRegistry.hasCommand("book")).thenReturn(true);
+        when(commandRegistry.getCommand("book")).thenReturn(bookCommandHandler);
+        when(bookCommandHandler.execute(any(Update.class))).thenReturn("Test response");
+
+        // Act
+        volleyBot.onUpdateReceived(update);
+
+        // Assert
+        verify(commandRegistry, times(1)).hasCommand("book");
+        verify(commandRegistry, times(1)).getCommand("book");
+        verify(bookCommandHandler, times(1)).execute(update);
+    }
+
     @Test
     void testOnUpdateReceived_CancelCommand() {
         // Arrange
@@ -188,7 +209,7 @@ public class VolleyBotTest {
     }
     
     @Test
-    void testOnUpdateReceived_UnknownCommand() {
+    void testOnUpdateReceived_UnknownCommand() throws TelegramApiException {
         // Arrange
         message.setText("/unknown");
         when(commandRegistry.hasCommand("unknown")).thenReturn(false);
@@ -199,8 +220,26 @@ public class VolleyBotTest {
         // Assert
         verify(commandRegistry, times(1)).hasCommand("unknown");
         verify(commandRegistry, times(0)).getCommand(any());
+        //noinspection unchecked
+        verify(volleyBot, times(0)).execute(any(BotApiMethod.class));
     }
-    
+
+    @Test
+    void testOnUpdateReceived_UnknownCommandWitBotUsername() throws TelegramApiException {
+        // Arrange
+        message.setText("/unknown@" + botUsername);
+        when(commandRegistry.hasCommand("unknown")).thenReturn(false);
+
+        // Act
+        volleyBot.onUpdateReceived(update);
+
+        // Assert
+        verify(commandRegistry, times(1)).hasCommand("unknown");
+        verify(commandRegistry, times(0)).getCommand(any());
+        //noinspection unchecked
+        verify(volleyBot, times(1)).execute(any(BotApiMethod.class));
+    }
+
     @Test
     void testOnUpdateReceived_NotCommand() {
         // Arrange

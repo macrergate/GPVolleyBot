@@ -9,7 +9,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 
 /**
- * Абстрактный класс для обработчиков команд бота
+ * Абстрактный класс для обработчиков команд бота.
  */
 @RequiredArgsConstructor
 public abstract class AbstractCommand implements Command {
