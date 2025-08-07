@@ -47,13 +47,18 @@ public abstract class AbstractCommand implements Command {
      */
     protected String getDisplayName(Update update) {
         User user = update.getMessage().getFrom();
-        if (user.getUserName() != null) {
-            return user.getUserName();
-        } else if (user.getLastName() != null) {
-            return user.getFirstName() + " " + user.getLastName();
+        String res = "";
+
+        if (user.getLastName() != null) {
+            res += user.getFirstName() + " " + user.getLastName().charAt(0) + " ";
         } else {
-            return user.getFirstName();
+            res += user.getFirstName() + " ";
         }
+
+        if (user.getUserName() != null) {
+            res += "@" + user.getUserName();
+        }
+        return res;
     }
     
     /**
