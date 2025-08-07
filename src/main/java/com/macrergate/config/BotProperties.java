@@ -25,10 +25,10 @@ public class BotProperties {
     /**
      * ID чата группы
      */
-    private String chatId;
+    private long chatId;
 
     /**
      * ID чата администратора
      */
-    private String adminChatId;
+    private long adminChatId;
 }

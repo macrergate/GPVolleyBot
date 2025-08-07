@@ -41,8 +41,6 @@ public class CommandIntegrationTest {
 
     private Update update;
     private Message message;
-    private User user;
-    private Chat chat;
 
     @BeforeEach
     void setUp() {
@@ -53,8 +51,8 @@ public class CommandIntegrationTest {
         // Настройка объектов Telegram API
         update = new Update();
         message = new Message();
-        user = new User();
-        chat = new Chat();
+        User user = new User();
+        Chat chat = new Chat();
 
         user.setId(123456789L);
         user.setFirstName("Test");
@@ -101,6 +99,6 @@ public class CommandIntegrationTest {
         assertThat(bookResponse2).contains("✅ Вы успешно записаны на игру!");
         assertThat(bookingService.getAllBookings()).hasSize(1);
         assertThat(bookingService.getAllBookings().get(0).getUserId()).isEqualTo("123456789");
-        assertThat(bookingService.getAllBookings().get(0).getDisplayName()).isEqualTo("testuser");
+        assertThat(bookingService.getAllBookings().get(0).getDisplayName()).isEqualTo("Test U @testuser");
     }
 }

@@ -32,7 +32,7 @@ public class VolleyBot extends TelegramLongPollingBot {
         this.commandRegistry = commandRegistry;
         this.listCommandHandler = listCommandHandler;
     }
-    
+
     /**
      * Метод вызывается после инициализации бина
      * Отправляет сообщение о том, что бот онлайн
@@ -55,21 +55,21 @@ public class VolleyBot extends TelegramLongPollingBot {
     /**
      * Метод для отправки сообщения в группу
      *
-     * @param text текст сообщения
+     * @param text   текст сообщения
      * @param chatId идентификатор групы
      */
-    public void sendMessageToGroup(String chatId, String text) {
+    public void sendMessageToGroup(long chatId, String text) {
         sendMessageToGroup(chatId, text, true);
     }
 
     /**
      * Метод для отправки сообщения в группу без звука
      *
-     * @param text текст сообщения
+     * @param text   текст сообщения
      * @param chatId идентификатор групы
      */
     @SuppressWarnings("unused")
-    public void sendLoudMessageToGroup(String chatId, String text) {
+    public void sendLoudMessageToGroup(long chatId, String text) {
         sendMessageToGroup(chatId, text, false);
     }
 
@@ -85,55 +85,68 @@ public class VolleyBot extends TelegramLongPollingBot {
     /**
      * Метод для отправки сообщения без звука в группу
      */
-    private void sendMessageToGroup(String chatId, String text, boolean silent) {
+    private void sendMessageToGroup(long chatId, String text, boolean silent) {
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
         message.setText(text);
         if (silent) {
             message.disableNotification();
         }
-        
+
         try {
             execute(message);
         } catch (TelegramApiException e) {
             log.error("Ошибка при отправке сообщения: {}", text, e);
         }
     }
-    
+
     @Override
     public String getBotUsername() {
         return botProperties.getUsername();
     }
-    
+
     @Override
     public void onUpdateReceived(Update update) {
         if (!update.hasMessage() || !update.getMessage().hasText()) {
             return;
         }
-        
+
         String messageText = update.getMessage().getText();
 
         // Проверяем, что сообщение начинается с "/"
         if (!messageText.startsWith("/")) {
             return;
         }
-        
+
         // Извлекаем имя команды (без слеша)
         String[] parts = messageText.split(" ", 2);
+
         String commandName = parts[0].substring(1).trim().toLowerCase(); // Убираем слеш и пробелы
-        
+
+
+        boolean botMention = false;
+        if (commandName.endsWith("@" + botProperties.getUsername())) {
+            botMention = true;
+            commandName = commandName.substring(0, commandName.length() - botProperties.getUsername().length() - 1);
+        }
+
         // Проверяем, существует ли такая команда
         if (!commandRegistry.hasCommand(commandName)) {
+            if (botMention) {
+                sendMessageToGroup(
+                        update.getMessage().getChatId(), "Неизвестная команда: '" + commandName + "'"
+                );
+            }
             return;
         }
-        
+
         // Получаем команду и выполняем ее
         Command command = commandRegistry.getCommand(commandName);
         String response = command.execute(update);
-        
+
         // Отправляем ответ пользователю
         if (response != null && !response.isEmpty()) {
-            sendMessageToGroup(String.valueOf(update.getMessage().getChatId()), response);
+            sendMessageToGroup(update.getMessage().getChatId(), response);
         }
     }
 

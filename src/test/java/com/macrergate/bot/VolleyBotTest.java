@@ -64,9 +64,9 @@ public class VolleyBotTest {
         String botToken = "test_token";
         when(botProperties.getToken()).thenReturn(botToken);
         when(botProperties.getUsername()).thenReturn(botUsername);
-        String chatId = "test_chat_id";
+        long chatId = 12345;
         when(botProperties.getChatId()).thenReturn(chatId);
-        String adminChatId = "test_admin_chat_id";
+        long adminChatId = 123456;
         when(botProperties.getAdminChatId()).thenReturn(adminChatId);
         
         // Создаем экземпляр бота с тестовыми параметрами
@@ -226,7 +226,7 @@ public class VolleyBotTest {
         
         // Assert - проверяем, что метод execute был вызван с сообщением "Бот онлайн"
         verify(spyBot, times(1)).execute(argThat((SendMessage message) ->
-                message.getChatId().equals(botProperties.getAdminChatId()) &&
+                message.getChatId().equals(String.valueOf(botProperties.getAdminChatId())) &&
             message.getText().equals("Бот онлайн")
         ));
     }
@@ -237,14 +237,14 @@ public class VolleyBotTest {
         VolleyBot spyBot = spy(volleyBot);
         doAnswer(invocation -> null).when(spyBot).execute(any(SendMessage.class));
         String testMessage = "Тестовое сообщение";
-        String testChatId = "Тестовый чат идентификатор";
+        long testChatId = 123456789L;
 
         // Act
         spyBot.sendMessageToGroup(testChatId, testMessage);
 
         // Assert - проверяем, что метод execute был вызван с правильными параметрами
         verify(spyBot, times(1)).execute(argThat((SendMessage message) ->
-                message.getChatId().equals(testChatId) &&
+                message.getChatId().equals(String.valueOf(testChatId)) &&
             message.getText().equals(testMessage)
         ));
     }
