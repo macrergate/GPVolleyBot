@@ -24,7 +24,7 @@ public class NotificationScheduler {
     }
 
     // Запуск уведомления каждый четверг в 10:00
-    @Scheduled(cron = "0 0 10 ? * THU")
+    @Scheduled(cron = "0 10 10 ? * THU")
     public void sendThursdayNotification() {
         settingsService.updateCurrentGame(LocalTime.of(18, 0), LocalDate.now());
 
