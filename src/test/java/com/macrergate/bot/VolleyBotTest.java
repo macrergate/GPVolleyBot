@@ -26,7 +26,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -256,7 +255,7 @@ public class VolleyBotTest {
     @Test
     void testSendOnlineMessage() throws Exception {
         // Arrange
-        VolleyBot spyBot = spy(volleyBot);
+        VolleyBot spyBot = volleyBot;
         doAnswer(invocation -> null).when(spyBot).execute(any(SendMessage.class));
         when(listCommandHandler.execute()).thenReturn("Test response");
 
@@ -273,7 +272,7 @@ public class VolleyBotTest {
     @Test
     void testSendMessageToGroup() throws Exception {
         // Arrange
-        VolleyBot spyBot = spy(volleyBot);
+        VolleyBot spyBot = volleyBot;
         doAnswer(invocation -> null).when(spyBot).execute(any(SendMessage.class));
         String testMessage = "Тестовое сообщение";
         long testChatId = 123456789L;

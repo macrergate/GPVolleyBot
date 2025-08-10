@@ -94,8 +94,9 @@ public class VolleyBot extends TelegramLongPollingBot {
 
         try {
             execute(message);
+            log.debug("sent message to {}", chatId);
         } catch (TelegramApiException e) {
-            log.error("Ошибка при отправке сообщения: {}", text, e);
+            log.error("Ошибка при отправке сообщения в чат {} : {}", chatId, text, e);
         }
     }
 
@@ -138,6 +139,8 @@ public class VolleyBot extends TelegramLongPollingBot {
             }
             return;
         }
+
+        log.debug("received command: {}", messageText);
 
         // Получаем команду и выполняем ее
         Command command = commandRegistry.getCommand(commandName);

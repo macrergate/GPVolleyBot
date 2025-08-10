@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 import com.macrergate.bot.VolleyBot;
+import com.macrergate.config.BotProperties;
 import com.macrergate.model.Settings;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -15,11 +16,14 @@ public class NotificationService {
     private final VolleyBot bot;
     private final SettingsService settingsService;
     private final BookingService bookingService;
+    private final BotProperties botProperties;
 
     @PostConstruct
     void init() {
-        settingsService.closeBooking();
-        sendOpenBookingNotification();
+        if (botProperties.isResetOnStart()) {
+            settingsService.closeBooking();
+            sendOpenBookingNotification();
+        }
     }
 
     public void sendOpenBookingNotification() {

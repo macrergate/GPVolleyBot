@@ -31,4 +31,6 @@ public class BotProperties {
      * ID чата администратора
      */
     private long adminChatId;
+
+    private boolean resetOnStart = false;
 }
