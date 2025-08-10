@@ -5,6 +5,7 @@ import java.time.LocalTime;
 
 import com.macrergate.bot.VolleyBot;
 import com.macrergate.model.Settings;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,11 @@ public class NotificationService {
     private final VolleyBot bot;
     private final SettingsService settingsService;
     private final BookingService bookingService;
+
+    @PostConstruct
+    void init() {
+        sendOpenBookingNotification();
+    }
 
     public void sendOpenBookingNotification() {
         if (settingsService.isBookingOpen()) {

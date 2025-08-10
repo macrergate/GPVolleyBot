@@ -4,7 +4,6 @@ import com.macrergate.command.Command;
 import com.macrergate.command.CommandRegistry;
 import com.macrergate.command.ListCommandHandler;
 import com.macrergate.config.BotProperties;
-import com.macrergate.service.NotificationService;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -23,18 +22,15 @@ public class VolleyBot extends TelegramLongPollingBot {
     private final BotProperties botProperties;
     private final CommandRegistry commandRegistry;
     private final ListCommandHandler listCommandHandler;
-    NotificationService notificationService;
 
     public VolleyBot(BotProperties botProperties,
                      CommandRegistry commandRegistry,
-                     ListCommandHandler listCommandHandler,
-                     NotificationService notificationService
+                     ListCommandHandler listCommandHandler
     ) {
         super(botProperties.getToken());
         this.botProperties = botProperties;
         this.commandRegistry = commandRegistry;
         this.listCommandHandler = listCommandHandler;
-        this.notificationService = notificationService;
     }
 
     /**
@@ -44,7 +40,6 @@ public class VolleyBot extends TelegramLongPollingBot {
     @PostConstruct
     public void sendOnlineMessage() {
         sendMessageToAdmin("Бот онлайн", true);
-        notificationService.sendOpenBookingNotification();
         sendMessageToAdmin(listCommandHandler.execute(), true);
         // Регистрируем хук для отправки сообщения при завершении работы
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {

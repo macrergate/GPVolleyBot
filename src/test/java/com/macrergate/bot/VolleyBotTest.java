@@ -6,7 +6,6 @@ import com.macrergate.command.CommandRegistry;
 import com.macrergate.command.LimitCommandHandler;
 import com.macrergate.command.ListCommandHandler;
 import com.macrergate.config.BotProperties;
-import com.macrergate.service.NotificationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -52,9 +51,6 @@ public class VolleyBotTest {
     private ListCommandHandler listCommandHandler;
 
     @Mock
-    private NotificationService notificationService;
-    
-    @Mock
     private LimitCommandHandler limitCommandHandler;
 
     private VolleyBot volleyBot;
@@ -77,7 +73,7 @@ public class VolleyBotTest {
         when(botProperties.getAdminChatId()).thenReturn(adminChatId);
         
         // Создаем экземпляр бота с тестовыми параметрами
-        volleyBot = Mockito.spy(new VolleyBot(botProperties, commandRegistry, listCommandHandler, notificationService));
+        volleyBot = Mockito.spy(new VolleyBot(botProperties, commandRegistry, listCommandHandler));
         //noinspection unchecked
         Mockito.doReturn(null).when(volleyBot).execute(any(BotApiMethod.class));
         // Настройка объектов Telegram API
