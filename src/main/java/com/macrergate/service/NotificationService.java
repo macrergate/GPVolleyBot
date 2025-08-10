@@ -18,6 +18,7 @@ public class NotificationService {
 
     @PostConstruct
     void init() {
+        settingsService.closeBooking();
         sendOpenBookingNotification();
     }
 
