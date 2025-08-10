@@ -16,7 +16,7 @@ public class NotificationScheduler {
     private final SettingsService settingsService;
 
     // Запуск уведомления каждый вторник в 9:00
-    @Scheduled(cron = "0 0 10 ? * TUE")
+    @Scheduled(cron = "0 0 7 ? * TUE")
     public void sendTuesdayNotification() {
         settingsService.updateCurrentGame(LocalTime.of(18, 0), LocalDate.now());
 
@@ -24,7 +24,7 @@ public class NotificationScheduler {
     }
 
     // Запуск уведомления каждый четверг в 10:00
-    @Scheduled(cron = "0 0 10 ? * THU")
+    @Scheduled(cron = "0 0 7 ? * THU")
     public void sendThursdayNotification() {
         settingsService.updateCurrentGame(LocalTime.of(18, 0), LocalDate.now());
 
@@ -32,7 +32,7 @@ public class NotificationScheduler {
     }
 
     // Запуск уведомления каждое воскресенье в 10:00
-    @Scheduled(cron = "0 0 10 ? * SUN")
+    @Scheduled(cron = "0 0 7 ? * SUN")
     public void sendSundayNotification() {
         settingsService.updateCurrentGame(LocalTime.of(17, 0), LocalDate.now());
 
@@ -40,7 +40,7 @@ public class NotificationScheduler {
     }
     
     // Закрытие записи каждый день в 21:00
-    @Scheduled(cron = "0 0 21 * * ?")
+    @Scheduled(cron = "0 0 18 * * ?")
     public void closeBooking() {
         if (settingsService.isBookingOpen()) {
             notificationService.sendCloseBookingNotification();
