@@ -23,7 +23,7 @@ public class VolleyBot extends TelegramLongPollingBot {
     private final BotProperties botProperties;
     private final CommandRegistry commandRegistry;
     private final ListCommandHandler listCommandHandler;
-    NotificationService notificationService
+    NotificationService notificationService;
 
     public VolleyBot(BotProperties botProperties,
                      CommandRegistry commandRegistry,
