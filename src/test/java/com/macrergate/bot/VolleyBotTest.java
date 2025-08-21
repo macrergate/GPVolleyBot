@@ -73,6 +73,7 @@ public class VolleyBotTest {
         
         // Создаем экземпляр бота с тестовыми параметрами
         volleyBot = Mockito.spy(new VolleyBot(botProperties, commandRegistry, listCommandHandler));
+        // чтобы не вызвать телеграм
         //noinspection unchecked
         Mockito.doReturn(null).when(volleyBot).execute(any(BotApiMethod.class));
         // Настройка объектов Telegram API
@@ -113,7 +114,6 @@ public class VolleyBotTest {
     void testOnUpdateReceived_BookCommand() {
         // Arrange
         message.setText("/book");
-        when(commandRegistry.hasCommand("book")).thenReturn(true);
         when(commandRegistry.getCommand("book")).thenReturn(bookCommandHandler);
         when(bookCommandHandler.execute(any(Update.class))).thenReturn("Test response");
         
@@ -121,7 +121,6 @@ public class VolleyBotTest {
         volleyBot.onUpdateReceived(update);
         
         // Assert
-        verify(commandRegistry, times(1)).hasCommand("book");
         verify(commandRegistry, times(1)).getCommand("book");
         verify(bookCommandHandler, times(1)).execute(update);
     }
@@ -130,7 +129,6 @@ public class VolleyBotTest {
     void testOnUpdateReceived_BookCommandWithBotUserName() {
         // Arrange
         message.setText("/book@" + botUsername);
-        when(commandRegistry.hasCommand("book")).thenReturn(true);
         when(commandRegistry.getCommand("book")).thenReturn(bookCommandHandler);
         when(bookCommandHandler.execute(any(Update.class))).thenReturn("Test response");
 
@@ -138,7 +136,6 @@ public class VolleyBotTest {
         volleyBot.onUpdateReceived(update);
 
         // Assert
-        verify(commandRegistry, times(1)).hasCommand("book");
         verify(commandRegistry, times(1)).getCommand("book");
         verify(bookCommandHandler, times(1)).execute(update);
     }
@@ -147,7 +144,6 @@ public class VolleyBotTest {
     void testOnUpdateReceived_CancelCommand() {
         // Arrange
         message.setText("/cancel");
-        when(commandRegistry.hasCommand("cancel")).thenReturn(true);
         when(commandRegistry.getCommand("cancel")).thenReturn(cancelCommandHandler);
         when(cancelCommandHandler.execute(any(Update.class))).thenReturn("Test response");
         
@@ -155,7 +151,6 @@ public class VolleyBotTest {
         volleyBot.onUpdateReceived(update);
         
         // Assert
-        verify(commandRegistry, times(1)).hasCommand("cancel");
         verify(commandRegistry, times(1)).getCommand("cancel");
         verify(cancelCommandHandler, times(1)).execute(update);
     }
@@ -164,7 +159,6 @@ public class VolleyBotTest {
     void testOnUpdateReceived_ListCommand() {
         // Arrange
         message.setText("/list");
-        when(commandRegistry.hasCommand("list")).thenReturn(true);
         when(commandRegistry.getCommand("list")).thenReturn(listCommandHandler);
         when(listCommandHandler.execute(any(Update.class))).thenReturn("Test response");
         
@@ -172,7 +166,6 @@ public class VolleyBotTest {
         volleyBot.onUpdateReceived(update);
         
         // Assert
-        verify(commandRegistry, times(1)).hasCommand("list");
         verify(commandRegistry, times(1)).getCommand("list");
         verify(listCommandHandler, times(1)).execute(update);
     }
@@ -181,7 +174,6 @@ public class VolleyBotTest {
     void testOnUpdateReceived_LimitCommand() {
         // Arrange
         message.setText("/limit 25");
-        when(commandRegistry.hasCommand("limit")).thenReturn(true);
         when(commandRegistry.getCommand("limit")).thenReturn(limitCommandHandler);
         when(limitCommandHandler.execute(any(Update.class))).thenReturn("Test response");
         
@@ -189,7 +181,6 @@ public class VolleyBotTest {
         volleyBot.onUpdateReceived(update);
         
         // Assert
-        verify(commandRegistry, times(1)).hasCommand("limit");
         verify(commandRegistry, times(1)).getCommand("limit");
         verify(limitCommandHandler, times(1)).execute(update);
     }
@@ -203,7 +194,6 @@ public class VolleyBotTest {
         volleyBot.onUpdateReceived(update);
         
         // Assert - проверяем, что никакие методы не вызываются
-        verify(commandRegistry, times(0)).hasCommand(any());
         verify(commandRegistry, times(0)).getCommand(any());
     }
     
@@ -211,14 +201,13 @@ public class VolleyBotTest {
     void testOnUpdateReceived_UnknownCommand() throws TelegramApiException {
         // Arrange
         message.setText("/unknown");
-        when(commandRegistry.hasCommand("unknown")).thenReturn(false);
-        
+        when(commandRegistry.getCommand("unknown")).thenReturn(null);
+
         // Act
         volleyBot.onUpdateReceived(update);
         
         // Assert
-        verify(commandRegistry, times(1)).hasCommand("unknown");
-        verify(commandRegistry, times(0)).getCommand(any());
+        verify(commandRegistry, times(1)).getCommand(any());
         //noinspection unchecked
         verify(volleyBot, times(0)).execute(any(BotApiMethod.class));
     }
@@ -227,14 +216,13 @@ public class VolleyBotTest {
     void testOnUpdateReceived_UnknownCommandWitBotUsername() throws TelegramApiException {
         // Arrange
         message.setText("/unknown@" + botUsername);
-        when(commandRegistry.hasCommand("unknown")).thenReturn(false);
+        when(commandRegistry.getCommand("unknown")).thenReturn(null);
 
         // Act
         volleyBot.onUpdateReceived(update);
 
         // Assert
-        verify(commandRegistry, times(1)).hasCommand("unknown");
-        verify(commandRegistry, times(0)).getCommand(any());
+        verify(commandRegistry, times(1)).getCommand(any());
         //noinspection unchecked
         verify(volleyBot, times(1)).execute(any(BotApiMethod.class));
     }
@@ -248,7 +236,6 @@ public class VolleyBotTest {
         volleyBot.onUpdateReceived(update);
         
         // Assert
-        verify(commandRegistry, times(0)).hasCommand(any());
         verify(commandRegistry, times(0)).getCommand(any());
     }
     

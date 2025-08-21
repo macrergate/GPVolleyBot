@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import jakarta.annotation.Nullable;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -38,6 +39,7 @@ public class CommandRegistry {
      * @param commandName Имя команды (без слеша)
      * @return Команда или null, если команда не найдена
      */
+    @Nullable
     public Command getCommand(String commandName) {
         return commandMap.get(normalize(commandName));
     }

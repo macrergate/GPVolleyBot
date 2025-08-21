@@ -84,9 +84,9 @@ public abstract class AbstractCommand implements Command {
         for (int i = 0; i < bookings.size(); i++) {
             var booking = bookings.get(i);
             sb.append(i + 1).append(". ").append(booking.getDisplayName());
-            if (booking.getArrivalTimeAsLocalTime() != null) {
-                sb.append(" (").append(booking.getArrivalTimeAsLocalTime()).append(")");
-            }
+            booking.getArrivalTimeAsLocalTime().ifPresent(localTime ->
+                    sb.append(" (").append(localTime).append(")")
+            );
             sb.append("\n");
         }
         

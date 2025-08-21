@@ -8,6 +8,7 @@ import java.util.Optional;
 import com.macrergate.model.Booking;
 import com.macrergate.model.Settings;
 import com.macrergate.repository.BookingRepository;
+import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,16 +17,10 @@ import org.springframework.stereotype.Service;
 public class BookingService {
     private final BookingRepository bookingRepository;
     private final SettingsService settingsService;
-    
-    public BookingResult bookGame(String userId, String displayName, LocalTime arrivalTime) {
+
+    public BookingResult bookGame(String userId, String displayName, @Nullable LocalTime arrivalTime) {
         if (!settingsService.isBookingOpen()) {
             return BookingResult.BOOKING_CLOSED;
-        }
-
-        Settings settings = settingsService.getSettings();
-        List<Booking> bookings = bookingRepository.findAllBookings();
-        if (bookings.size() >= settings.getPlayerLimit()) {
-            return BookingResult.PLAYER_LIMIT_REACHED;
         }
 
         Optional<Booking> existingBooking = bookingRepository.findByUserId(userId);
@@ -40,6 +35,10 @@ public class BookingService {
             return BookingResult.ALREADY_BOOKED;
         }
 
+        if (isPlayerLimitReached()) {
+            return BookingResult.PLAYER_LIMIT_REACHED;
+        }
+
         Booking booking = new Booking();
         booking.setUserId(userId);
         booking.setDisplayName(displayName);
@@ -50,6 +49,12 @@ public class BookingService {
 
         bookingRepository.save(booking);
         return BookingResult.SUCCESS;
+    }
+
+    private boolean isPlayerLimitReached() {
+        Settings settings = settingsService.getSettings();
+        int bookingsCount = bookingRepository.findBookingsCount();
+        return bookingsCount >= settings.getPlayerLimit();
     }
 
     public enum BookingResult {

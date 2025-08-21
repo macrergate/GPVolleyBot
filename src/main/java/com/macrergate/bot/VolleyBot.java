@@ -86,6 +86,7 @@ public class VolleyBot extends TelegramLongPollingBot {
      */
     private void sendMessageToGroup(long chatId, String text, boolean silent) {
         SendMessage message = new SendMessage();
+        message.enableMarkdownV2(true);
         message.setChatId(chatId);
         message.setText(text);
         if (silent) {
@@ -130,8 +131,10 @@ public class VolleyBot extends TelegramLongPollingBot {
             commandName = commandName.substring(0, commandName.length() - botProperties.getUsername().length() - 1);
         }
 
+        Command command = commandRegistry.getCommand(commandName);
+
         // Проверяем, существует ли такая команда
-        if (!commandRegistry.hasCommand(commandName)) {
+        if (command == null) {
             if (botMention) {
                 sendMessageToGroup(
                         update.getMessage().getChatId(), "❌ Неизвестная команда: '" + commandName + "'!"
@@ -142,12 +145,11 @@ public class VolleyBot extends TelegramLongPollingBot {
 
         log.debug("received command: {}", messageText);
 
-        // Получаем команду и выполняем ее
-        Command command = commandRegistry.getCommand(commandName);
+        // Выполняем команду
         String response = command.execute(update);
 
         // Отправляем ответ пользователю
-        if (response != null && !response.isEmpty()) {
+        if (!response.isEmpty()) {
             sendMessageToGroup(update.getMessage().getChatId(), response);
         }
     }

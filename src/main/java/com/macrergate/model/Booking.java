@@ -2,7 +2,9 @@ package com.macrergate.model;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Optional;
 
+import jakarta.annotation.Nullable;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
@@ -20,12 +22,12 @@ public class Booking {
     public void setBookingTimeAsLocalDateTime(LocalDateTime localDateTime) {
         this.bookingTime = localDateTime != null ? localDateTime.toString() : null;
     }
-    
-    public LocalTime getArrivalTimeAsLocalTime() {
-        return arrivalTime != null ? LocalTime.parse(arrivalTime) : null;
+
+    public Optional<LocalTime> getArrivalTimeAsLocalTime() {
+        return Optional.ofNullable(arrivalTime).map(LocalTime::parse);
     }
-    
-    public void setArrivalTimeAsLocalTime(LocalTime localTime) {
+
+    public void setArrivalTimeAsLocalTime(@Nullable LocalTime localTime) {
         this.arrivalTime = localTime != null ? localTime.toString() : null;
     }
 }

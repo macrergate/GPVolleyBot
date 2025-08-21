@@ -1,5 +1,6 @@
 package com.macrergate.command;
 
+import jakarta.annotation.Nonnull;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 /**
@@ -13,6 +14,7 @@ public interface Command {
      * @param update Объект обновления от Telegram
      * @return Текстовый ответ для отправки пользователю
      */
+    @Nonnull
     String execute(Update update);
     
     /**

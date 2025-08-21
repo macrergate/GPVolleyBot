@@ -80,7 +80,7 @@ public class RepositoryIntegrationTest {
         assertThat(allBookings).hasSize(2);
         assertThat(foundBooking).isPresent();
         assertThat(foundBooking.get().getDisplayName()).isEqualTo("User 1");
-        assertThat(foundBooking.get().getArrivalTimeAsLocalTime()).isEqualTo(LocalTime.of(18, 30));
+        assertThat(foundBooking.get().getArrivalTimeAsLocalTime()).contains(LocalTime.of(18, 30));
     }
 
     @Test
@@ -122,5 +122,30 @@ public class RepositoryIntegrationTest {
 
         // Assert
         assertThat(allBookings).isEmpty();
+    }
+
+    @Test
+    void testBookingsCount() {
+        assertThat(bookingRepository.findBookingsCount()).isEqualTo(0);
+
+        // Arrange
+        Booking booking1 = new Booking();
+        booking1.setUserId("user1");
+        booking1.setDisplayName("User 1");
+        booking1.setBookingTimeAsLocalDateTime(LocalDateTime.now());
+
+        Booking booking2 = new Booking();
+        booking2.setUserId("user2");
+        booking2.setDisplayName("User 2");
+        booking2.setBookingTimeAsLocalDateTime(LocalDateTime.now().plusMinutes(5));
+
+        bookingRepository.save(booking1);
+        bookingRepository.save(booking2);
+
+        assertThat(bookingRepository.findBookingsCount()).isEqualTo(2);
+
+        bookingRepository.deleteByUserId("user2");
+
+        assertThat(bookingRepository.findBookingsCount()).isEqualTo(1);
     }
 }

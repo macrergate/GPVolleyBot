@@ -10,12 +10,17 @@ import java.util.Optional;
 import com.macrergate.model.Booking;
 import com.macrergate.model.Settings;
 import com.macrergate.repository.BookingRepository;
+import com.macrergate.repository.SettingsRepository;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -25,23 +30,27 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class BookingServiceTest {
 
     @Mock
-    private BookingRepository bookingRepository;
-    
+    BookingRepository bookingRepository;
+
     @Mock
-    private SettingsService settingsService;
-    
-    @InjectMocks
-    private BookingService bookingService;
-    
-    private Booking booking1;
-    private Booking booking2;
-    private Settings settings;
+    SettingsRepository settingsRepository;
+
+    BookingService bookingService;
+
+    Booking booking1;
+    Booking booking2;
+    Settings settings;
     
     @BeforeEach
     void setUp() {
+        SettingsService settingsService = Mockito.spy(new SettingsService(settingsRepository));
+        bookingService = new BookingService(bookingRepository, settingsService);
+
         booking1 = new Booking();
         booking1.setId(1L);
         booking1.setUserId("user1");
@@ -58,6 +67,9 @@ public class BookingServiceTest {
         
         settings = new Settings();
         settings.setPlayerLimit(Settings.DEFAULT_PLAYER_LIMIT);
+        settings.setBookingOpen(true);
+
+        when(settingsService.getSettings()).thenReturn(settings);
     }
     
     @Test
@@ -77,10 +89,8 @@ public class BookingServiceTest {
     @Test
     void testBookGame() {
         // Arrange
-        when(settingsService.isBookingOpen()).thenReturn(true);
         when(bookingRepository.findByUserId("user1")).thenReturn(Optional.empty());
         when(bookingRepository.findAllBookings()).thenReturn(Collections.singletonList(booking2));
-        when(settingsService.getSettings()).thenReturn(settings);
         when(bookingRepository.save(any(Booking.class))).thenReturn(booking1);
         
         // Act
@@ -94,9 +104,7 @@ public class BookingServiceTest {
     @Test
     void testBookGameWhenAlreadyExists() {
         // Arrange
-        when(settingsService.isBookingOpen()).thenReturn(true);
         when(bookingRepository.findByUserId("user1")).thenReturn(Optional.of(booking1));
-        when(settingsService.getSettings()).thenReturn(settings);
 
         // Act - без указания времени
         BookingService.BookingResult result = bookingService.bookGame("user1", "User 1", null);
@@ -109,8 +117,6 @@ public class BookingServiceTest {
     @Test
     void testUpdateArrivalTime() {
         // Arrange
-        when(settingsService.isBookingOpen()).thenReturn(true);
-        when(settingsService.getSettings()).thenReturn(settings);
         when(bookingRepository.findByUserId("user1")).thenReturn(Optional.of(booking1));
         when(bookingRepository.save(any(Booking.class))).thenReturn(booking1);
 
@@ -122,12 +128,27 @@ public class BookingServiceTest {
         assertThat(result).isEqualTo(BookingService.BookingResult.TIME_UPDATED);
         verify(bookingRepository, times(1)).save(any(Booking.class));
     }
-    
+
+    @Test
+    void testUpdateArrivalTimeWhenLimitIsReached() {
+        // Arrange
+        settings.setPlayerLimit(2);
+        when(bookingRepository.findByUserId("user1")).thenReturn(Optional.of(booking1));
+
+        // Act - с указанием нового времени
+        LocalTime newTime = LocalTime.of(19, 0);
+        BookingService.BookingResult result = bookingService.bookGame("user1", "User 1", newTime);
+
+        // Assert
+        assertThat(result).isEqualTo(BookingService.BookingResult.TIME_UPDATED);
+        verify(bookingRepository, times(1)).save(any(Booking.class));
+    }
+
     @Test
     void testBookGameWhenBookingClosed() {
         // Arrange
-        when(settingsService.isBookingOpen()).thenReturn(false);
-        
+        settings.setBookingOpen(false);
+
         // Act
         BookingService.BookingResult result = bookingService.bookGame("user1", "User 1", LocalTime.of(18, 30));
         
@@ -138,11 +159,7 @@ public class BookingServiceTest {
     
     @Test
     void testBookGameWhenLimitReached() {
-        // Arrange
-        when(settingsService.isBookingOpen()).thenReturn(true);
-        // Удаляем ненужную заглушку: when(bookingRepository.findByUserId("user3")).thenReturn(Optional.empty());
-        when(bookingRepository.findAllBookings()).thenReturn(Arrays.asList(booking1, booking2));
-        when(settingsService.getSettings()).thenReturn(settings);
+        when(bookingRepository.findBookingsCount()).thenReturn(2);
         settings.setPlayerLimit(2); // Limit is 2, and we already have 2 bookings
         
         // Act
@@ -157,7 +174,6 @@ public class BookingServiceTest {
     @Test
     void testCancelBooking() {
         // Arrange
-        when(settingsService.isBookingOpen()).thenReturn(true);
         when(bookingRepository.findByUserId("user1")).thenReturn(Optional.of(booking1));
         
         // Act
@@ -171,8 +187,8 @@ public class BookingServiceTest {
     @Test
     void testCancelBookingWhenBookingClosed() {
         // Arrange
-        when(settingsService.isBookingOpen()).thenReturn(false);
-        
+        settings.setBookingOpen(false);
+
         // Act
         boolean result = bookingService.cancelBooking("user1");
         
@@ -184,7 +200,6 @@ public class BookingServiceTest {
     @Test
     void testCancelBookingWhenNotExists() {
         // Arrange
-        when(settingsService.isBookingOpen()).thenReturn(true);
         when(bookingRepository.findByUserId("user3")).thenReturn(Optional.empty());
         
         // Act
