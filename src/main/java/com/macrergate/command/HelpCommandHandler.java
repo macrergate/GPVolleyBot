@@ -2,6 +2,7 @@ package com.macrergate.command;
 
 import com.macrergate.service.BookingService;
 import com.macrergate.service.SettingsService;
+import jakarta.annotation.Nonnull;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -34,6 +35,7 @@ public class HelpCommandHandler extends AbstractCommand {
         super(bookingService, settingsService);
     }
 
+    @Nonnull
     @Override
     public String execute(Update update) {
         return HELP;

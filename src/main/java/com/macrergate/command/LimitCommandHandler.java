@@ -1,10 +1,10 @@
 package com.macrergate.command;
 
-import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.objects.Update;
-
 import com.macrergate.service.BookingService;
 import com.macrergate.service.SettingsService;
+import jakarta.annotation.Nonnull;
+import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.objects.Update;
 
 /**
  * Обработчик команды /limit для изменения лимита игроков
@@ -15,7 +15,8 @@ public class LimitCommandHandler extends AbstractCommand {
     public LimitCommandHandler(BookingService bookingService, SettingsService settingsService) {
         super(bookingService, settingsService);
     }
-    
+
+    @Nonnull
     @Override
     public String execute(Update update) {
         String[] args = getCommandArgs(update);
