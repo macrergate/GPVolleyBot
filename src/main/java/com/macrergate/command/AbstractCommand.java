@@ -72,7 +72,7 @@ public abstract class AbstractCommand implements Command {
 
         // Если нет записей, возвращаем стандартное сообщение без информации о времени
         if (bookings.isEmpty()) {
-            return "На сегодня нет записей.";
+            return "На сегодня нет записей\\.";
         }
 
         StringBuilder sb = new StringBuilder();
@@ -83,9 +83,9 @@ public abstract class AbstractCommand implements Command {
         sb.append("Список записавшихся на игру:\n");
         for (int i = 0; i < bookings.size(); i++) {
             var booking = bookings.get(i);
-            sb.append(i + 1).append(". ").append(booking.getDisplayName());
+            sb.append(i + 1).append("\\. ").append(booking.getDisplayName());
             booking.getArrivalTimeAsLocalTime().ifPresent(localTime ->
-                    sb.append(" (").append(localTime).append(")")
+                    sb.append(" \\(").append(localTime).append("\\)")
             );
             sb.append("\n");
         }

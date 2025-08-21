@@ -21,13 +21,13 @@ public class CloseCommandHandler extends AbstractCommand {
     public String execute(Update update) {
         // Проверяем, закрыта ли уже запись
         if (!settingsService.isBookingOpen()) {
-            return "❌ Запись на игру уже закрыта.";
+            return "❌ Запись на игру уже закрыта\\.";
         }
         
         // Закрываем запись
         settingsService.closeBooking();
 
-        return "✅ Запись на игру закрыта.";
+        return "✅ Запись на игру закрыта\\.";
     }
     
     @Override

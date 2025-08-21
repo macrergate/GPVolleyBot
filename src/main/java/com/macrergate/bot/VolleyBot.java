@@ -39,12 +39,12 @@ public class VolleyBot extends TelegramLongPollingBot {
      */
     @PostConstruct
     public void sendOnlineMessage() {
-        sendMessageToAdmin("Бот онлайн", true);
+        sendMessageToAdmin("Бот онлайн\\.", true);
         sendMessageToAdmin(listCommandHandler.execute(), true);
         // Регистрируем хук для отправки сообщения при завершении работы
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
-                sendMessageToAdmin("Бот офлайн", true);
+                sendMessageToAdmin("Бот офлайн\\!", true);
             } catch (Exception e) {
                 log.error("Ошибка при отправке сообщения о завершении работы", e);
             }
@@ -137,7 +137,7 @@ public class VolleyBot extends TelegramLongPollingBot {
         if (command == null) {
             if (botMention) {
                 sendMessageToGroup(
-                        update.getMessage().getChatId(), "❌ Неизвестная команда: '" + commandName + "'!"
+                        update.getMessage().getChatId(), "❌ Неизвестная команда: '" + commandName + "'\\!"
                 );
             }
             return;

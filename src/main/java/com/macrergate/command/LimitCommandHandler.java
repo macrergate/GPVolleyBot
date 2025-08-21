@@ -22,23 +22,23 @@ public class LimitCommandHandler extends AbstractCommand {
         String[] args = getCommandArgs(update);
         
         if (!settingsService.isBookingOpen()) {
-            return "❌ Не удалось изменить лимит: запись на игру закрыта.";
+            return "❌ Не удалось изменить лимит: запись на игру закрыта\\.";
         }
         
         if (args.length == 0) {
-            return "Укажите новый лимит игроков.";
+            return "Укажите новый лимит игроков\\.";
         }
         
         try {
             int limit = Integer.parseInt(args[0]);
             if (limit <= 0) {
-                return "❌ Лимит должен быть положительным числом.";
+                return "❌ Лимит должен быть положительным числом\\.";
             }
             
             settingsService.updatePlayerLimit(limit);
-            return "✅ Лимит игроков изменен на " + limit + ".\n\n" + generateBookingsList();
+            return "✅ Лимит игроков изменен на " + limit + "\\.\n\n" + generateBookingsList();
         } catch (NumberFormatException e) {
-            return "❌ Неверный формат числа.";
+            return "❌ Неверный формат числа\\.";
         }
     }
     
