@@ -74,7 +74,7 @@ public abstract class AbstractCommand implements Command {
         if (user.getUserName() != null) {
             res += "@" + user.getUserName();
         }
-        return normalize(res);
+        return res;
     }
 
     /**
@@ -99,7 +99,7 @@ public abstract class AbstractCommand implements Command {
         sb.append("Список записавшихся на игру:\n");
         for (int i = 0; i < bookings.size(); i++) {
             var booking = bookings.get(i);
-            sb.append(i + 1).append("\\. ").append(booking.getDisplayName());
+            sb.append(i + 1).append("\\. ").append(normalize(booking.getDisplayName()));
             booking.getArrivalTimeAsLocalTime().ifPresent(localTime ->
                     sb.append(" \\(").append(localTime).append("\\)")
             );
