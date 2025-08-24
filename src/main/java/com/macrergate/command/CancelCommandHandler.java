@@ -22,7 +22,7 @@ public class CancelCommandHandler extends AbstractCommand {
         String userId = getUserId(update);
         
         if (!settingsService.isBookingOpen()) {
-            return "❌ Не удалось отменить запись: запись на игру закрыта.";
+            return "❌ Не удалось отменить запись: запись на игру закрыта\\.";
         }
         
         boolean success = bookingService.cancelBooking(userId);
@@ -30,10 +30,10 @@ public class CancelCommandHandler extends AbstractCommand {
         StringBuilder response = new StringBuilder();
         
         if (success) {
-            response.append("✅ Ваша запись отменена.nn");
+            response.append("✅ Ваша запись отменена\\.\n\n");
             response.append(generateBookingsList());
         } else {
-            response.append("❌ Не удалось отменить запись: вы не были записаны на игру.");
+            response.append("❌ Не удалось отменить запись: вы не были записаны на игру\\.");
         }
         
         return response.toString();

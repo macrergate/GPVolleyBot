@@ -42,27 +42,27 @@ public class BookCommandHandler extends AbstractCommand {
         
         switch (result) {
             case SUCCESS:
-                response.append("✅ Вы успешно записаны на игру!nn");
+                response.append("✅ Вы успешно записаны на игру\\!\n\n");
                 response.append(generateBookingsList());
                 break;
             case TIME_UPDATED:
-                response.append("✅ Время вашего прихода обновлено!nn");
+                response.append("✅ Время вашего прихода обновлено\\!\n\n");
                 response.append(generateBookingsList());
                 break;
             case PLAYER_LIMIT_REACHED:
-                response.append("❌ Не удалось записаться: достигнут лимит игроков (");
+                response.append("❌ Не удалось записаться: достигнут лимит игроков \\(");
                 response.append(settingsService.getSettings().getPlayerLimit());
-                response.append(").");
+                response.append("\\)\\.");
                 break;
             case ALREADY_BOOKED:
-                response.append("❌ Не удалось записаться: вы уже записаны на эту игру.");
-                response.append("nЧтобы изменить время прихода, используйте команду /book ЧЧ:ММ");
+                response.append("❌ Не удалось записаться: вы уже записаны на эту игру\\.");
+                response.append("\nЧтобы изменить время прихода, используйте команду /book ЧЧ:ММ");
                 break;
             case BOOKING_CLOSED:
-                response.append("❌ Не удалось записаться: запись на игру закрыта.");
+                response.append("❌ Не удалось записаться: запись на игру закрыта\\.");
                 break;
             default:
-                response.append("❌ Не удалось записаться: неизвестная ошибка.");
+                response.append("❌ Не удалось записаться: неизвестная ошибка\\.");
                 break;
         }
         

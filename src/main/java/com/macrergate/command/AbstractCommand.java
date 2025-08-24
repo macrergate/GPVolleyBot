@@ -72,25 +72,25 @@ public abstract class AbstractCommand implements Command {
 
         // Если нет записей, возвращаем стандартное сообщение без информации о времени
         if (bookings.isEmpty()) {
-            return "На сегодня нет записей.";
+            return "На сегодня нет записей\\.";
         }
 
         StringBuilder sb = new StringBuilder();
 
         // Добавляем информацию о времени начала игры
-        sb.append("🕒 Начало игры: ").append(settings.getCurrentGameTimeAsLocalTime()).append("nn");
+        sb.append("🕒 Начало игры: ").append(settings.getCurrentGameTimeAsLocalTime()).append("\n\n");
 
-        sb.append("Список записавшихся на игру:n");
+        sb.append("Список записавшихся на игру:\n");
         for (int i = 0; i < bookings.size(); i++) {
             var booking = bookings.get(i);
-            sb.append(i + 1).append(". ").append(booking.getDisplayName());
+            sb.append(i + 1).append("\\. ").append(booking.getDisplayName());
             booking.getArrivalTimeAsLocalTime().ifPresent(localTime ->
-                    sb.append(" (").append(localTime).append(")")
+                    sb.append(" \\(").append(localTime).append("\\)")
             );
-            sb.append("n");
+            sb.append("\n");
         }
-
-        sb.append("nВсего: ").append(bookings.size()).append("/").append(settings.getPlayerLimit());
+        
+        sb.append("\nВсего: ").append(bookings.size()).append("/").append(settings.getPlayerLimit());
         
         return sb.toString();
     }

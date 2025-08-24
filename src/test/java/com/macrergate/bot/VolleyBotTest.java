@@ -252,7 +252,7 @@ public class VolleyBotTest {
         // Assert - проверяем, что метод execute был вызван с сообщением "Бот онлайн"
         verify(spyBot, times(1)).execute(argThat((SendMessage message) ->
                 message.getChatId().equals(String.valueOf(botProperties.getAdminChatId())) &&
-                        message.getText().equals("Бот онлайн.")
+            message.getText().equals("Бот онлайн")
         ));
     }
     
