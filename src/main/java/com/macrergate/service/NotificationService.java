@@ -46,8 +46,8 @@ public class NotificationService {
         // Открываем запись
         settingsService.openBooking();
 
-        String message = "🏐 Запись на игру сегодня в " + gameTime + " открыта\\!\n" +
-                         "Для записи используйте команду /book\n" +
+        String message = "🏐 Запись на игру сегодня в " + gameTime + " открыта!n" +
+                "Для записи используйте команду /bookn" +
                          "Лимит игроков: " + settings.getPlayerLimit();
 
         bot.sendLoudMessageToMainGroup(message);
@@ -61,7 +61,7 @@ public class NotificationService {
         // Закрываем запись
         settingsService.closeBooking();
 
-        String message = "🏐 Запись на игру закрыта\\.";
+        String message = "🏐 Запись на игру закрыта.";
 
         bot.sendMessageToAdmin(message, true);
     }

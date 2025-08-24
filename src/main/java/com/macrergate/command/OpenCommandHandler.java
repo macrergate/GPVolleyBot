@@ -36,11 +36,11 @@ public class OpenCommandHandler extends AbstractCommand {
             try {
                 gameTime = LocalTime.parse(args[0], TIME_FORMATTER);
             } catch (DateTimeParseException e) {
-                return "❌ Неверный формат времени\\. Используйте формат ЧЧ:ММ, например, 19:00";
+                return "❌ Неверный формат времени. Используйте формат ЧЧ:ММ, например, 19:00";
             }
         } else if (isAlreadyOpen) {
             // Если нет аргумента и запись уже открыта, просто возвращаем сообщение без изменения времени
-            return "❌ Запись на игру уже открыта\\.";
+            return "❌ Запись на игру уже открыта.";
         }
 
         // Обновляем время начала игры
@@ -49,10 +49,10 @@ public class OpenCommandHandler extends AbstractCommand {
         // Открываем запись, если она еще не открыта
         if (!isAlreadyOpen) {
             settingsService.openBooking();
-            return "✅ Запись на игру открыта\\.\n\n" + generateBookingsList();
+            return "✅ Запись на игру открыта.nn" + generateBookingsList();
         } else {
             // Если запись уже открыта и указано новое время
-            return "✅ Время начала игры обновлено\\.\n\n" + generateBookingsList();
+            return "✅ Время начала игры обновлено.nn" + generateBookingsList();
         }
     }
     
