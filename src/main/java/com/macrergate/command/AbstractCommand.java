@@ -39,9 +39,25 @@ public abstract class AbstractCommand implements Command {
         return update.getMessage().getFrom().getId().toString();
     }
     
+    public static String normalize(String str) {
+        StringBuilder builder = new StringBuilder();
+
+        for (int i = 0; i < str.length(); i++) {
+            char c = str.charAt(i);
+
+            if (c == '.' || c == '!' || c == '(' || c == ')' || c == '_') {
+                builder.append('\\');
+            }
+
+            builder.append(c);
+        }
+
+        return builder.toString();
+    }
+
     /**
      * Получает отображаемое имя пользователя
-     * 
+     *
      * @param update Объект обновления от Telegram
      * @return Отображаемое имя пользователя
      */
@@ -58,9 +74,9 @@ public abstract class AbstractCommand implements Command {
         if (user.getUserName() != null) {
             res += "@" + user.getUserName();
         }
-        return res;
+        return normalize(res);
     }
-    
+
     /**
      * Генерирует список записавшихся на игру
      * 
