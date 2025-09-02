@@ -32,7 +32,7 @@ public class BookCommandHandler extends AbstractCommand {
             try {
                 arrivalTime = LocalTime.parse(args[0]);
             } catch (DateTimeParseException e) {
-                return "Неверный формат времени. Используйте формат ЧЧ:ММ";
+                return "Неверный формат времени\\. Используйте формат ЧЧ:ММ";
             }
         }
         
